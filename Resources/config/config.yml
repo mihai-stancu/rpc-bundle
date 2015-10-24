@@ -1,0 +1,16 @@
+framework:
+    serializer:
+        enabled: true
+
+    request:
+        formats:
+            bencode:    'application/bencode'
+            bson:       'application/bson'
+            cbor:       'application/cbor'
+            export:     'application/php-export'
+            igbinary:   'application/igbinary'
+            msgpack:    'application/msgpack'
+            serialize:  'application/php-serialize'
+            tnetstring: 'application/tnetstring'
+            ubjson:     'application/ubjson'
+            yaml:       'application/yaml'

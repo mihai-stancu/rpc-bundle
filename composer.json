@@ -1,0 +1,35 @@
+{
+    "name": "mihai-stancu/rpc-bundle",
+    "license": "MIT",
+    "type": "library",
+    "description": "",
+    "keywords": ["rpc", "json-rpc", "xml-rpc"],
+    "authors": [
+        {
+            "name": "Mihai Stancu",
+            "email": "stancu.t.mihai@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^5.5",
+
+        "guzzlehttp/guzzle": "^6.0",
+        "mihai-stancu/serializer": "dev-master"
+    },
+    "suggest": {
+        "ext-amqp": "For AMQP connections",
+        "guzzlehttp/guzzle": "For HTTP connections",
+        "ext-stomp": "For STOMP connections",
+        "ext-zmq": "For ZeroMQ connections"
+    },
+    "autoload": {
+        "psr-4": {
+          "MS\\RpcBundle\\": ""
+        }
+    },
+    "config": {
+        "preferred-install": "source",
+        "minimum-stability": "dev",
+        "prefer-stable": true
+    }
+}
