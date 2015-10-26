@@ -27,19 +27,6 @@ services:
     # Normalizers
     #
 
-    property_info.extractor.reflection:
-        class: Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor
-
-    property_info.extractor:
-        class: Symfony\Component\PropertyInfo\PropertyInfoExtractor
-        arguments: [ [], [ @property_info.extractor.reflection ] ]
-
-    serializer.normalizer.get_set_method_normalizer:
-        class: Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer
-        arguments: [ ~, ~, @property_info.extractor ]
-        tags:
-            - { name: serializer.normalizer, priority: -200 }
-
     ms.rpc.serializer.normalizer.date_time:
         class: MS\RpcBundle\Serializer\Normalizer\DateTimeNormalizer
         tags:
@@ -47,19 +34,19 @@ services:
 
     ms.rpc.serializer.normalizer.rpc:
         class: MS\RpcBundle\Serializer\Normalizer\RpcNormalizer
-        arguments: [ ~, ~, @property_info.extractor ]
+        arguments: [ ~, ~, @ms.property_info.extractor ]
         tags:
             - { name: serializer.normalizer }
 
     ms.rpc.serializer.normalizer.json_rpc_xs:
         class: MS\RpcBundle\Serializer\Normalizer\JsonRpcXSNormalizer
-        arguments: [ ~, ~, @property_info.extractor ]
+        arguments: [ ~, ~, @ms.property_info.extractor ]
         tags:
             - { name: serializer.normalizer }
 
     ms.rpc.serializer.normalizer.xml_rpc:
         class: MS\RpcBundle\Serializer\Normalizer\XmlRpcNormalizer
-        arguments: [ ~, ~, @property_info.extractor ]
+        arguments: [ ~, ~, @ms.property_info.extractor ]
         tags:
             - { name: serializer.normalizer }
 

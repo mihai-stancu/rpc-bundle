@@ -15,10 +15,10 @@ use MS\RpcBundle\Model\JsonRpcXRequest;
 use MS\RpcBundle\Model\JsonRpcXResponse;
 use MS\RpcBundle\Model\RpcAuth;
 use MS\RpcBundle\Model\RpcError;
-use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
+use MS\SerializerBundle\Serializer\Normalizer\TypehintNormalizer;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 
-class RpcNormalizer extends GetSetMethodNormalizer implements SerializerAwareInterface
+class RpcNormalizer extends TypehintNormalizer implements SerializerAwareInterface
 {
     protected static $formats = [
         'json-rpc' => [
