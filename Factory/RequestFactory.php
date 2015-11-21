@@ -57,8 +57,7 @@ class RequestFactory extends AbstractFactory
         }
 
         $protocol = $request->headers->get('RPC-Request-Type');
-        $encoding = $request->headers->get('Content-Type');
-        $encoding = preg_replace('/^([^\/]*\/)/', '', $encoding);
+        $encoding = $request->getContentType();
 
         $class = $this->className($protocol);
         $context = ['encoding' => $encoding];

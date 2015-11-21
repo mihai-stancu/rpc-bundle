@@ -61,8 +61,7 @@ class ResponseFactory extends AbstractFactory
         }
 
         $protocol = $request->headers->get('RPC-Response-Type');
-        $encoding = $request->headers->get('Content-Type');
-        $encoding = preg_replace('/^([^\/]*\/)/', '', $encoding);
+        $encoding = $request->getContentType();
 
         $rpcResponse = $this->create($protocol);
 

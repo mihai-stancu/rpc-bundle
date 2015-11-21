@@ -9,6 +9,7 @@
 
 namespace MS\RpcBundle\EventListener;
 
+use MS\RpcBundle\Factory\AbstractFactory;
 use MS\RpcBundle\Factory\ResponseFactory;
 use MS\RpcBundle\Model\RpcRequest;
 use MS\RpcBundle\Model\RpcResponse;
@@ -81,7 +82,7 @@ class ResponseListener
         $response = $event->getResponse() ?: new Response();
 
         $acceptType = $request->headers->get('Accept');
-        $contentType = $request->headers->get('Content-Type');
+        $contentType = $request->getContentType();
         if (!in_array($acceptType, ['*/*', $contentType])) {
             $contentType = $acceptType;
         }
@@ -105,7 +106,7 @@ class ResponseListener
     {
         $protocol = $response->headers->get('RPC-Response-Type');
         $encoding = $response->headers->get('Content-Type');
-        $encoding = preg_replace('/^([^\/]*\/)/', '', $encoding);
+        $encoding = preg_replace(AbstractFactory::REGEX_CONTENT_TYPE, '$6$7', $encoding);
 
         $content = $this->serializer->serialize($rpcResponse, $protocol, ['encoding' => $encoding]);
         $response->setContent($content);

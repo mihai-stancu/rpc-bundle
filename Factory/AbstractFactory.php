@@ -23,6 +23,8 @@ use Symfony\Component\Serializer\Serializer;
 
 abstract class AbstractFactory
 {
+    const REGEX_CONTENT_TYPE = '/^((app)|(application))\/((x-www-(form)-urlencoded|(\w*+)))$/';
+
     /**
      * @var array|string[]
      */
@@ -46,9 +48,11 @@ abstract class AbstractFactory
         'bson',
         'cbor',
         'export',
+        'form',
         'igbinary',
         'json',
         'msgpack',
+        'rison',
         'serialize',
         'tnetstring',
         'ubjson',
@@ -73,7 +77,7 @@ abstract class AbstractFactory
     {
         $protocol = $object->headers->get('RPC-Request-Type');
         $encoding = $object->headers->get('Content-Type');
-        $encoding = preg_replace('/^([^\/]*\/)/', '', $encoding);
+        $encoding = preg_replace(AbstractFactory::REGEX_CONTENT_TYPE, '$6$7', $encoding);
 
         return in_array($encoding, static::$encodings)
            and array_key_exists($protocol, static::$protocols['request'])

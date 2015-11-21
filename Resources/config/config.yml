@@ -4,13 +4,15 @@ framework:
 
     request:
         formats:
-            bencode:    'application/bencode'
-            bson:       'application/bson'
-            cbor:       'application/cbor'
-            export:     'application/php-export'
-            igbinary:   'application/igbinary'
-            msgpack:    'application/msgpack'
-            serialize:  'application/php-serialize'
-            tnetstring: 'application/tnetstring'
-            ubjson:     'application/ubjson'
-            yaml:       'application/yaml'
+            bencode:    ['application/bencode',               'app/bencode'     ]
+            bson:       ['application/bson',                  'app/bson'        ]
+            cbor:       ['application/cbor',                  'app/cbor'        ]
+            export:     ['application/export',                'app/export'      ]
+            form:       ['application/x-www-form-urlencoded', 'app/form'        ]
+            igbinary:   ['application/igbinary',              'app/igbinary'    ]
+            msgpack:    ['application/msgpack',               'app/msgpack'     ]
+            rison:      ['application/rison',                 'app/rison'       ]
+            serialize:  ['application/serialize',             'app/serialize'   ]
+            tnetstring: ['application/tnetstring',            'app/tnetstring'  ]
+            ubjson:     ['application/ubjson',                'app/ubjson'      ]
+            yaml:       ['application/yaml',                  'app/yaml'        ]
