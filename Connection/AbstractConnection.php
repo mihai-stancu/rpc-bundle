@@ -99,7 +99,7 @@ abstract class AbstractConnection implements SerializerAwareInterface, Connectio
      */
     public function send($service, $method, array $params = [], $resultResultType = null)
     {
-        $rpcProtocol = $this->getProtocol();
+        $rpcProtocol = $this->protocol;
         $rpcRequest = $this->getRequestFactory()->create($rpcProtocol);
 
         if ($this->synchronous) {

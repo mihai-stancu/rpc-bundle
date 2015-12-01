@@ -21,6 +21,8 @@ class MSRpcBundle extends Bundle
     {
         parent::build($container);
 
+        $this->container = $container;
+
         $container->addCompilerPass(new AddConnectionsCompilerPass());
         $container->addCompilerPass(new AddProxiesCompilerPass());
         $container->addCompilerPass(new AddServicesCompilerPass());
@@ -38,6 +40,8 @@ class MSRpcBundle extends Bundle
                 require $file;
             }
         };
+
+
 
         spl_autoload_register($autoloader);
     }

@@ -16,3 +16,5 @@ framework:
             tnetstring: ['application/tnetstring',            'app/tnetstring'  ]
             ubjson:     ['application/ubjson',                'app/ubjson'      ]
             yaml:       ['application/yaml',                  'app/yaml'        ]
+
+ms_rpc: ~

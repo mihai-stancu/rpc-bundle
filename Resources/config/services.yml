@@ -11,13 +11,13 @@ services:
 
     ms.rpc.request_listener:
         class: MS\RpcBundle\EventListener\RequestListener
-        arguments: [ @ms.rpc.request_factory, @router.default ]
+        arguments: [ "@ms.rpc.request_factory", "@router.default" ]
         tags:
             - { name: kernel.event_listener, event: kernel.request, priority: 34 }
 
     ms.rpc.response_listener:
         class: MS\RpcBundle\EventListener\ResponseListener
-        arguments: [ @ms.rpc.response_factory, @serializer ]
+        arguments: [ "@ms.rpc.response_factory", "@serializer" ]
         tags:
             - { name: kernel.event_listener, event: kernel.view      }
             - { name: kernel.event_listener, event: kernel.exception }
@@ -34,19 +34,19 @@ services:
 
     ms.rpc.serializer.normalizer.rpc:
         class: MS\RpcBundle\Serializer\Normalizer\RpcNormalizer
-        arguments: [ ~, ~, @ms.property_info.extractor ]
+        arguments: [ ~, ~, "@ms.property_info.extractor" ]
         tags:
             - { name: serializer.normalizer }
 
     ms.rpc.serializer.normalizer.json_rpc_xs:
         class: MS\RpcBundle\Serializer\Normalizer\JsonRpcXSNormalizer
-        arguments: [ ~, ~, @ms.property_info.extractor ]
+        arguments: [ ~, ~, "@ms.property_info.extractor" ]
         tags:
             - { name: serializer.normalizer }
 
     ms.rpc.serializer.normalizer.xml_rpc:
         class: MS\RpcBundle\Serializer\Normalizer\XmlRpcNormalizer
-        arguments: [ ~, ~, @ms.property_info.extractor ]
+        arguments: [ ~, ~, "@ms.property_info.extractor" ]
         tags:
             - { name: serializer.normalizer }
 
@@ -70,8 +70,8 @@ services:
 
     ms.rpc.request_factory:
         class: MS\RpcBundle\Factory\RequestFactory
-        arguments: [ @serializer ]
+        arguments: [ "@serializer" ]
 
     ms.rpc.response_factory:
         class: MS\RpcBundle\Factory\ResponseFactory
-        arguments: [ @serializer ]
+        arguments: [ "@serializer" ]
