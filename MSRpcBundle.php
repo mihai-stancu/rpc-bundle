@@ -41,8 +41,6 @@ class MSRpcBundle extends Bundle
             }
         };
 
-
-
         spl_autoload_register($autoloader);
     }
 }

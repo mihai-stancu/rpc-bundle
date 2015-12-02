@@ -77,7 +77,7 @@ abstract class AbstractFactory
     {
         $protocol = $object->headers->get('RPC-Request-Type');
         $encoding = $object->headers->get('Content-Type');
-        $encoding = preg_replace(AbstractFactory::REGEX_CONTENT_TYPE, '$6$7', $encoding);
+        $encoding = preg_replace(static::REGEX_CONTENT_TYPE, '$6$7', $encoding);
 
         return in_array($encoding, static::$encodings)
            and array_key_exists($protocol, static::$protocols['request'])
