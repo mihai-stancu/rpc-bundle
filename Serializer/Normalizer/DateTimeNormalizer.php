@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 
 class DateTimeNormalizer  extends SerializerAwareNormalizer implements NormalizerInterface, DenormalizerInterface
 {
-    protected static $denormalizationFormats = [
+    protected static $stringDenormalizationFormats = [
         'Y-m-d H:i:s',
         'Y-m-d H:i:s.u',
         \DateTime::ISO8601,
@@ -51,13 +51,39 @@ class DateTimeNormalizer  extends SerializerAwareNormalizer implements Normalize
     {
         if (is_int($data)) {
             $result = new \DateTime();
-            $result->setTimestamp($data);
+
+            return $result->setTimestamp($data);
         }
 
-        foreach (static::$denormalizationFormats as $format) {
-            if ($result = \DateTime::createFromFormat($format, $data)) {
-                return $result;
+        if (is_string($data)) {
+            $formats = static::$stringDenormalizationFormats;
+
+            if (isset($context['datetime_format'])) {
+                $formats = array($context['datetime_format']);
             }
+
+            foreach ($formats as $format) {
+                if ($result = \DateTime::createFromFormat($format, $data)) {
+                    return $result;
+                }
+            }
+        }
+
+        if (is_array($data) or (is_object($data) and $data instanceof \stdClass)) {
+            $data = (array) $data;
+            $timestamp = mktime(
+                isset($data['hours']) ? $data['hours'] : date('H'),
+                isset($data['minutes']) ? $data['minutes'] : date('i'),
+                isset($data['seconds']) ? $data['seconds'] : date('s'),
+
+                isset($data['mon']) ? $data['mon'] : date('n'),
+                isset($data['mday']) ? $data['mday'] : date('j'),
+                isset($data['year']) ? $data['year'] : date('Y')
+            );
+
+            $result = new \DateTime();
+
+            return $result->setTimestamp($timestamp);
         }
     }
 
@@ -70,15 +96,15 @@ class DateTimeNormalizer  extends SerializerAwareNormalizer implements Normalize
      */
     public function supportsDenormalization($data, $type, $format = null)
     {
-        if (!is_int($data) and !is_string($data)) {
+        if (!is_int($data) and !is_string($data) and !is_array($data) and !is_object($data)) {
             return false;
         }
 
-        if ($type !== null and $type !== \DateTime::class) {
+        if ($type !== null and in_array($type, array(\DateTime::class, \DateTimeImmutable::class))) {
             return false;
         }
 
-        if (!is_int($data) and strtotime($data) === false) {
+        if (is_string($data) and strtotime($data) === false) {
             return false;
         }
 
@@ -92,9 +118,10 @@ class DateTimeNormalizer  extends SerializerAwareNormalizer implements Normalize
      *
      * @return string
      */
-    public function normalize($object, $format = 'string', array $context = [])
+    public function normalize($object, $format = 'string', array $context = array('type' => 'string'))
     {
-        switch ($format) {
+        $type = isset($context['string']) ? $context['string'] : null;
+        switch ($type) {
             case 'integer':
                 return $object->getTimestamp();
 
@@ -117,10 +144,7 @@ class DateTimeNormalizer  extends SerializerAwareNormalizer implements Normalize
      */
     public function supportsNormalization($data, $format = null)
     {
-        if ($format === null or !in_array($format, static::$normalizationFormats)) {
-            return false;
-        }
-
-        return $data InstanceOf \DateTime;
+        return in_array($format, static::$normalizationFormats)
+           and $data instanceof \DateTime;
     }
 }

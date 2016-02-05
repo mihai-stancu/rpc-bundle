@@ -9,8 +9,8 @@
 
 namespace MS\RpcBundle\Connection;
 
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 class StompConnection extends QueueConnection
@@ -104,5 +104,7 @@ class StompConnection extends QueueConnection
         ];
 
         $this->client->send($destination, $message, $headers);
+
+        return;
     }
 }

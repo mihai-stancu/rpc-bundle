@@ -7,9 +7,11 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\JsonRpc;
 
-class JsonRpcResponse extends RpcResponse
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+
+class Response extends RpcResponse
 {
     #region property jsonrpc
 

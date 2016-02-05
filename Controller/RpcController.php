@@ -11,10 +11,10 @@ namespace MS\RpcBundle\Controller;
 
 use MS\RpcBundle\Factory\RequestFactory;
 use MS\RpcBundle\Factory\ResponseFactory;
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
-use MS\RpcBundle\Model\RpcXRequest;
-use MS\RpcBundle\Model\RpcXResponse;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+use MS\RpcBundle\Model\Rpc\Response as RpcXResponse;
+use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 

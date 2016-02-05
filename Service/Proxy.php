@@ -9,22 +9,22 @@
 
 namespace MS\RpcBundle\Service;
 
-use MS\RpcBundle\Connection\ConnectionInterface;
+use MS\RpcBundle\Connection\Connection;
 use MS\RpcBundle\RpcException;
 
 trait Proxy
 {
-    /** @var ConnectionInterface */
+    /** @var Connection */
     protected $connection;
 
     /** @var  string */
     protected $service;
 
     /**
-     * @param ConnectionInterface $connection
-     * @param string              $service
+     * @param Connection $connection
+     * @param string     $service
      */
-    public function __construct(ConnectionInterface $connection, $service)
+    public function __construct(Connection $connection, $service)
     {
         $this->connection = $connection;
         $this->service = $service;

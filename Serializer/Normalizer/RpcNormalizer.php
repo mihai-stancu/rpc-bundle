@@ -9,12 +9,18 @@
 
 namespace MS\RpcBundle\Serializer\Normalizer;
 
-use MS\RpcBundle\Model\JsonRpcRequest;
-use MS\RpcBundle\Model\JsonRpcResponse;
-use MS\RpcBundle\Model\JsonRpcXRequest;
-use MS\RpcBundle\Model\JsonRpcXResponse;
-use MS\RpcBundle\Model\RpcAuth;
-use MS\RpcBundle\Model\RpcError;
+use MS\RpcBundle\Model\JsonRpc\Request as JsonRpcRequest;
+use MS\RpcBundle\Model\JsonRpc\Response as JsonRpcResponse;
+use MS\RpcBundle\Model\JsonRpcX\Request as JsonRpcXRequest;
+use MS\RpcBundle\Model\JsonRpcX\Response as JsonRpcXResponse;
+use MS\RpcBundle\Model\Rpc\Auth;
+use MS\RpcBundle\Model\Rpc\Error;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
+use MS\RpcBundle\Model\RpcX\Response as RpcXResponse;
+use MS\SerializerBundle\Serializer\Normalizer\MixedArrayDenormalizer;
+use MS\SerializerBundle\Serializer\Normalizer\MixedDenormalizer;
 use MS\SerializerBundle\Serializer\Normalizer\TypehintNormalizer;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 
@@ -22,22 +28,54 @@ class RpcNormalizer extends TypehintNormalizer implements SerializerAwareInterfa
 {
     protected static $formats = [
         'json-rpc' => [
-            RpcAuth::class,
-            RpcError::class,
+            Auth::class,
+            Error::class,
             JsonRpcRequest::class,
             JsonRpcResponse::class,
         ],
         'json-rpc-x' => [
-            RpcAuth::class,
-            RpcError::class,
+            Auth::class,
+            Error::class,
             JsonRpcXRequest::class,
             JsonRpcXResponse::class,
+        ],
+        'rpc' => [
+            Auth::class,
+            Error::class,
+            RpcRequest::class,
+            RpcResponse::class,
+        ],
+        'rpc-x' => [
+            Auth::class,
+            Error::class,
+            RpcXRequest::class,
+            RpcXResponse::class,
         ],
     ];
 
     protected $ignoredAttributes = [
         'version',
     ];
+
+    /**
+     * @param array  $data
+     * @param string $class
+     * @param null   $format
+     * @param array  $context
+     *
+     * @return object
+     */
+    public function denormalize($data, $class, $format = null, array $context = [])
+    {
+        if (!empty($data['params'])) {
+            $type = MixedArrayDenormalizer::FORMAT;
+            $format = MixedDenormalizer::FORMAT;
+
+            $data['params'] = $this->serializer->denormalize($data['params'], $type, $format, $context);
+        }
+
+        return parent::denormalize($data, $class, $format, $context);
+    }
 
     /**
      * @param mixed  $data

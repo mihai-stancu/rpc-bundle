@@ -11,15 +11,15 @@ namespace MS\RpcBundle\Connection;
 
 use MS\RpcBundle\Factory\RequestFactory;
 use MS\RpcBundle\Factory\ResponseFactory;
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
-use MS\RpcBundle\Model\RpcXRequest;
+use MS\RpcBundle\Model\Rpc\Request;
+use MS\RpcBundle\Model\Rpc\Response;
+use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-abstract class AbstractConnection implements SerializerAwareInterface, ConnectionInterface
+abstract class AbstractConnection implements SerializerAwareInterface, Connection
 {
     /** @var  SerializerInterface|DenormalizerInterface */
     protected $serializer;
@@ -74,14 +74,14 @@ abstract class AbstractConnection implements SerializerAwareInterface, Connectio
     }
 
     /**
-     * @param RpcRequest $rpcRequest
-     * @param string     $resultType
+     * @param Request $rpcRequest
+     * @param string  $resultType
      *
      * @throws InvalidConfigurationException
      *
-     * @return RpcResponse|null
+     * @return Response|null
      */
-    protected function sendRequest(RpcRequest $rpcRequest, $resultType = null)
+    protected function sendRequest(Request $rpcRequest, $resultType = null)
     {
         $message = sprintf('%s does not implement the %s method', get_called_class(), __FUNCTION__);
         throw new InvalidConfigurationException($message);
@@ -117,7 +117,7 @@ abstract class AbstractConnection implements SerializerAwareInterface, Connectio
         $rpcResponse = $this->sendRequest($rpcRequest, $resultResultType);
 
         $result = null;
-        if ($rpcResponse instanceof RpcResponse) {
+        if ($rpcResponse instanceof Response) {
             $result = $rpcResponse->getResult();
         }
 

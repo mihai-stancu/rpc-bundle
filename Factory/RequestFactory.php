@@ -9,8 +9,8 @@
 
 namespace MS\RpcBundle\Factory;
 
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcXRequest;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
 use MS\RpcBundle\RpcException;
 use Symfony\Component\HttpFoundation\Request;
 

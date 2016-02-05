@@ -7,9 +7,12 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\JsonRpcXS;
 
-class JsonRpcXSRequest extends JsonRpcXRequest
+use MS\RpcBundle\Model\JsonRpcX\Request as JsonRpcXRequest;
+use MS\RpcBundle\Model\Rpc\Auth;
+
+class Request extends JsonRpcXRequest
 {
     #region property jsonrpc
 
@@ -56,7 +59,7 @@ class JsonRpcXSRequest extends JsonRpcXRequest
     #region property auth
 
     /**
-     * @return object
+     * @return Auth
      */
     public function getA()
     {
@@ -64,9 +67,9 @@ class JsonRpcXSRequest extends JsonRpcXRequest
     }
 
     /**
-     * @param object $a
+     * @param Auth $a
      */
-    public function setA($a)
+    public function setA(Auth $a = null)
     {
         $this->setAuth($a);
     }

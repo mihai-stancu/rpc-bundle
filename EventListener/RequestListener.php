@@ -10,7 +10,7 @@
 namespace MS\RpcBundle\EventListener;
 
 use MS\RpcBundle\Factory\RequestFactory;
-use MS\RpcBundle\Model\RpcXRequest;
+use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 

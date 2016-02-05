@@ -9,8 +9,8 @@
 
 namespace MS\RpcBundle\Serializer\Encoder;
 
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
+use MS\RpcBundle\Model\Rpc\Request;
+use MS\RpcBundle\Model\Rpc\Response;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 use Symfony\Component\Serializer\Encoder\EncoderInterface;
 use Symfony\Component\Serializer\Encoder\NormalizationAwareInterface;
@@ -139,9 +139,9 @@ class XmlRpcEncoder extends SerializerAwareEncoder implements EncoderInterface, 
      */
     public function encode($object, $format, array $context = [])
     {
-        if ($object instanceof RpcRequest or $object instanceof RpcRequest) {
+        if ($object instanceof Request or $object instanceof Request) {
             $context['xml_root_node_name'] = 'methodCall';
-        } elseif ($object instanceof RpcResponse) {
+        } elseif ($object instanceof Response) {
             $context['xml_root_node_name'] = 'methodResponse';
         }
 

@@ -7,14 +7,16 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\XmlRpc;
 
-class XmlRpcResponse extends RpcResponse
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+
+class Response extends RpcResponse
 {
     #region property result
 
     /**
-     * @return object
+     * @return array|object
      */
     public function getParams()
     {
@@ -22,7 +24,7 @@ class XmlRpcResponse extends RpcResponse
     }
 
     /**
-     * @param object $params
+     * @param array|object $params
      */
     public function setParams($params)
     {
@@ -34,7 +36,7 @@ class XmlRpcResponse extends RpcResponse
     #region property error
 
     /**
-     * @return RpcError
+     * @return Fault
      */
     public function getFault()
     {
@@ -42,9 +44,9 @@ class XmlRpcResponse extends RpcResponse
     }
 
     /**
-     * @param RpcError $fault
+     * @param Fault $fault
      */
-    public function setFault(RpcError $fault = null)
+    public function setFault(Fault $fault = null)
     {
         $this->setError($fault);
     }

@@ -9,12 +9,12 @@
 
 namespace MS\RpcBundle\Serializer\Normalizer;
 
-use MS\RpcBundle\Model\JsonRpcXSRequest;
-use MS\RpcBundle\Model\JsonRpcXSResponse;
-use MS\RpcBundle\Model\RpcAuth;
-use MS\RpcBundle\Model\RpcError;
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
+use MS\RpcBundle\Model\JsonRpcXS\Request as JsonRpcXSRequest;
+use MS\RpcBundle\Model\JsonRpcXS\Response as JsonRpcXSResponse;
+use MS\RpcBundle\Model\Rpc\Auth;
+use MS\RpcBundle\Model\Rpc\Error;
+use MS\RpcBundle\Model\Rpc\Request;
+use MS\RpcBundle\Model\Rpc\Response;
 
 class JsonRpcXSNormalizer extends RpcNormalizer
 {
@@ -22,8 +22,8 @@ class JsonRpcXSNormalizer extends RpcNormalizer
 
     protected static $formats = [
         'json-rpc-xs' => [
-            RpcAuth::class,
-            RpcError::class,
+            Auth::class,
+            Error::class,
             JsonRpcXSRequest::class,
             JsonRpcXSResponse::class,
         ],
@@ -48,7 +48,7 @@ class JsonRpcXSNormalizer extends RpcNormalizer
      * @param string $format
      * @param array  $context
      *
-     * @return RpcRequest|RpcResponse
+     * @return Request|Response
      */
     public function denormalize($data, $class, $format = null, array $context = [])
     {
@@ -84,7 +84,7 @@ class JsonRpcXSNormalizer extends RpcNormalizer
     {
         $array = parent::normalize($object, $format, $context);
 
-        if ($object instanceof RpcRequest and isset($array[static::KEY_CONTROL])) {
+        if ($object instanceof Request and isset($array[static::KEY_CONTROL])) {
             $control = [];
 
             if (in_array('short', $array[static::KEY_CONTROL], true)) {

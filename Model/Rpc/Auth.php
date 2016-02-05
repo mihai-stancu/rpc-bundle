@@ -7,9 +7,9 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\Rpc;
 
-class RpcAuth
+class Auth
 {
     #region property id
 

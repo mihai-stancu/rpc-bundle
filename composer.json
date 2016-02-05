@@ -19,6 +19,9 @@
 
         "symfony/framework-bundle": "^2|^3",
 
+        "symfony/property-info": "dev-master@dev",
+        "symfony/serializer": "dev-master@dev",
+
         "mihai-stancu/serializer": "^1"
     },
     "require-dev": {

@@ -7,35 +7,13 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\Rpc;
 
 /**
  * RPC Response object.
  */
-class RpcResponse
+class Response extends Message
 {
-    #region property version
-
-    protected $version;
-
-    /**
-     * @return string
-     */
-    public function getVersion()
-    {
-        return $this->version;
-    }
-
-    /**
-     * @param string $version
-     */
-    public function setVersion($version)
-    {
-        $this->version = $version;
-    }
-
-    #endregion
-
     #region property result
 
     /**
@@ -68,12 +46,12 @@ class RpcResponse
     #region property error
 
     /**
-     * @var RpcError
+     * @var Error
      */
     protected $error;
 
     /**
-     * @return RpcError
+     * @return Error
      */
     public function getError()
     {
@@ -81,40 +59,15 @@ class RpcResponse
     }
 
     /**
-     * @param RpcError $error
+     * @param Error $error
      */
-    public function setError(RpcError $error = null)
+    public function setError(Error $error = null)
     {
         if (!empty($error)) {
             $this->result = null;
         }
 
         $this->error = $error;
-    }
-
-    #endregion
-
-    #region property id
-
-    /**
-     * @var int|string
-     */
-    protected $id;
-
-    /**
-     * @return int|string
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param int|string $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     #endregion

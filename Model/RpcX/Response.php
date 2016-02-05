@@ -7,12 +7,14 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\RpcX;
+
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
 
 /**
  * RPC Response object.
  */
-class RpcXResponse extends RpcResponse
+class Response extends RpcResponse
 {
     #region property status
 

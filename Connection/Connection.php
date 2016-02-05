@@ -11,7 +11,7 @@ namespace MS\RpcBundle\Connection;
 
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
-interface ConnectionInterface
+interface Connection
 {
     /**
      * @param string $service

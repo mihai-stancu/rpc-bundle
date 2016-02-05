@@ -7,9 +7,12 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\JsonRpcXS;
 
-class JsonRpcXSResponse extends JsonRpcXResponse
+use MS\RpcBundle\Model\JsonRpcX\Response as JsonRpcXResponse;
+use MS\RpcBundle\Model\Rpc\Error;
+
+class Response extends JsonRpcXResponse
 {
     #region property jsonrpc
 
@@ -76,7 +79,7 @@ class JsonRpcXSResponse extends JsonRpcXResponse
     #region property error
 
     /**
-     * @return RpcError
+     * @return Error
      */
     public function getE()
     {
@@ -84,9 +87,9 @@ class JsonRpcXSResponse extends JsonRpcXResponse
     }
 
     /**
-     * @param RpcError $e
+     * @param Error $e
      */
-    public function setE(RpcError $e = null)
+    public function setE(Error $e = null)
     {
         $this->setError($e);
     }

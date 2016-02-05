@@ -9,14 +9,23 @@
 
 namespace MS\RpcBundle\Factory;
 
-use MS\RpcBundle\Model\JsonRpcRequest;
-use MS\RpcBundle\Model\JsonRpcResponse;
-use MS\RpcBundle\Model\JsonRpcXRequest;
-use MS\RpcBundle\Model\JsonRpcXResponse;
-use MS\RpcBundle\Model\JsonRpcXSRequest;
-use MS\RpcBundle\Model\JsonRpcXSResponse;
-use MS\RpcBundle\Model\XmlRpcRequest;
-use MS\RpcBundle\Model\XmlRpcResponse;
+use MS\RpcBundle\Model\JSend\Request as JSendRequest;
+use MS\RpcBundle\Model\JSend\Response as JSendResponse;
+use MS\RpcBundle\Model\JsonRpc\Request as JsonRpcRequest;
+use MS\RpcBundle\Model\JsonRpc\Response as JsonRpcResponse;
+use MS\RpcBundle\Model\JsonRpcX\Request as JsonRpcXRequest;
+use MS\RpcBundle\Model\JsonRpcX\Response as JsonRpcXResponse;
+use MS\RpcBundle\Model\JsonRpcXS\Request as JsonRpcXSRequest;
+use MS\RpcBundle\Model\JsonRpcXS\Response as JsonRpcXSResponse;
+use MS\RpcBundle\Model\Rest\Request as RestRequest;
+use MS\RpcBundle\Model\Rest\Response as RestResponse;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+use MS\RpcBundle\Model\RpcX\Response as RpcXResponse;
+use MS\RpcBundle\Model\Soap\Request as SoapRequest;
+use MS\RpcBundle\Model\Soap\Response as SoapResponse;
+use MS\RpcBundle\Model\XmlRpc\Request as XmlRpcRequest;
+use MS\RpcBundle\Model\XmlRpc\Response as XmlRpcResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Serializer;
@@ -30,15 +39,25 @@ abstract class AbstractFactory
      */
     protected static $protocols = [
         'request' => [
+            'jsend' => JSendRequest::class,
             'json-rpc' => JsonRpcRequest::class,
             'json-rpc-x' => JsonRpcXRequest::class,
             'json-rpc-xs' => JsonRpcXSRequest::class,
+            'rest' => RestRequest::class,
+            'rpc' => RpcRequest::class,
+            'rpc-x' => JsonRpcRequest::class,
+            'soap' => SoapRequest::class,
             'xml-rpc' => XmlRpcRequest::class,
         ],
         'response' => [
+            'jsend' => JSendResponse::class,
             'json-rpc' => JsonRpcResponse::class,
             'json-rpc-x' => JsonRpcXResponse::class,
             'json-rpc-xs' => JsonRpcXSResponse::class,
+            'rest' => RestResponse::class,
+            'rpc' => RpcResponse::class,
+            'rpc-x' => RpcXResponse::class,
+            'soap' => SoapResponse::class,
             'xml-rpc' => XmlRpcResponse::class,
         ],
     ];

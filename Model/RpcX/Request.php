@@ -7,9 +7,12 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\RpcX;
 
-class RpcXRequest extends RpcRequest
+use MS\RpcBundle\Model\Rpc\Auth;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+
+class Request extends RpcRequest
 {
     #region property control
 
@@ -39,12 +42,12 @@ class RpcXRequest extends RpcRequest
     #region property auth
 
     /**
-     * @var RpcAuth
+     * @var Auth
      */
     protected $auth;
 
     /**
-     * @return RpcAuth
+     * @return Auth
      */
     public function getAuth()
     {
@@ -52,9 +55,9 @@ class RpcXRequest extends RpcRequest
     }
 
     /**
-     * @param RpcAuth $auth
+     * @param Auth $auth
      */
-    public function setAuth(RpcAuth $auth = null)
+    public function setAuth(Auth $auth = null)
     {
         $this->auth = $auth;
     }

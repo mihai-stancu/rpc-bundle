@@ -11,8 +11,8 @@ namespace MS\RpcBundle\EventListener;
 
 use MS\RpcBundle\Factory\AbstractFactory;
 use MS\RpcBundle\Factory\ResponseFactory;
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;

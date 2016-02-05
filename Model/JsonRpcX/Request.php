@@ -7,13 +7,15 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\JsonRpcX;
 
-class JsonRpcRequest extends RpcRequest
+use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
+
+class Request extends RpcXRequest
 {
     #region property jsonrpc
 
-    protected $version = '2.0';
+    protected $version = '2.0.x';
 
     /**
      * @return string

@@ -7,26 +7,34 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\Rpc;
 
-class XmlRpcRequest extends RpcRequest
+/**
+ * RPC Request object.
+ */
+class Request extends Message
 {
     #region property method
 
     /**
+     * @var string
+     */
+    protected $method;
+
+    /**
      * @return string
      */
-    public function getMethodName()
+    public function getMethod()
     {
-        return $this->getMethod();
+        return $this->method;
     }
 
     /**
-     * @param string $methodName
+     * @param string $method
      */
-    public function setMethodName($methodName)
+    public function setMethod($method)
     {
-        $this->setMethod($methodName);
+        $this->method = $method;
     }
 
     #endregion
@@ -34,11 +42,16 @@ class XmlRpcRequest extends RpcRequest
     #region property params
 
     /**
+     * @var array
+     */
+    protected $params = [];
+
+    /**
      * @return array
      */
     public function getParams()
     {
-        return parent::getParams();
+        return $this->params;
     }
 
     /**
@@ -46,7 +59,7 @@ class XmlRpcRequest extends RpcRequest
      */
     public function setParams($params)
     {
-        parent::setParams($params);
+        $this->params = $params;
     }
 
     #endregion

@@ -9,10 +9,10 @@
 
 namespace MS\RpcBundle\Factory;
 
-use MS\RpcBundle\Model\RpcError;
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
-use MS\RpcBundle\Model\RpcXResponse;
+use MS\RpcBundle\Model\Rpc\Error;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+use MS\RpcBundle\Model\RpcX\Response as RpcXResponse;
 use MS\RpcBundle\RpcException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,7 +71,7 @@ class ResponseFactory extends AbstractFactory
         }
 
         if ($result instanceof \Exception) {
-            $error = new RpcError();
+            $error = new Error();
             $error->setCode($result->getCode());
             $error->setMessage($result->getMessage());
             $error->setData($result->getTraceAsString());

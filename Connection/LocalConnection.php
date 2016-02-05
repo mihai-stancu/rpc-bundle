@@ -39,10 +39,11 @@ class LocalConnection extends AbstractConnection
      * @param string $service
      * @param string $method
      * @param array  $params
+     * @param null   $resultResultType
      *
      * @return mixed
      */
-    public function send($service, $method, array $params = [])
+    public function send($service, $method, array $params = [], $resultResultType = null)
     {
         $service = $this->container->get($service);
 

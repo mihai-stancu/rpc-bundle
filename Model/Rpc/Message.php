@@ -7,12 +7,9 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model;
+namespace MS\RpcBundle\Model\Rpc;
 
-/**
- * RPC Request object.
- */
-class RpcRequest
+class Message
 {
     #region property version
 
@@ -32,56 +29,6 @@ class RpcRequest
     public function setVersion($version)
     {
         $this->version = $version;
-    }
-
-    #endregion
-
-    #region property method
-
-    /**
-     * @var string
-     */
-    protected $method;
-
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * @param string $method
-     */
-    public function setMethod($method)
-    {
-        $this->method = $method;
-    }
-
-    #endregion
-
-    #region property params
-
-    /**
-     * @var array
-     */
-    protected $params = [];
-
-    /**
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param array $params
-     */
-    public function setParams($params)
-    {
-        $this->params = $params;
     }
 
     #endregion

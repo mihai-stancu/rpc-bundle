@@ -14,8 +14,8 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
 
 class HttpConnection extends AbstractConnection
 {
@@ -91,6 +91,8 @@ class HttpConnection extends AbstractConnection
         $rpcResult = $rpcResponse->getResult();
         $rpcResult = $this->serializer->denormalize($rpcResult, $resultType, $format, $context);
         $rpcResponse->setResult($rpcResult);
+
+        return $rpcResponse;
     }
 
     /**

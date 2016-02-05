@@ -9,8 +9,8 @@
 
 namespace MS\RpcBundle\Connection;
 
-use MS\RpcBundle\Model\RpcRequest;
-use MS\RpcBundle\Model\RpcResponse;
+use MS\RpcBundle\Model\Rpc\Request;
+use MS\RpcBundle\Model\Rpc\Response;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
 class AmqpConnection extends QueueConnection
@@ -90,11 +90,11 @@ class AmqpConnection extends QueueConnection
     }
 
     /**
-     * @param RpcRequest $rpcRequest
+     * @param Request $rpcRequest
      *
-     * @return RpcResponse|null
+     * @return Response|null
      */
-    protected function sendRequest(RpcRequest $rpcRequest)
+    protected function sendRequest(Request $rpcRequest)
     {
         $message = $this->serializer->serialize(
             $rpcRequest,

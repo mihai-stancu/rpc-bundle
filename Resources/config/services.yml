@@ -44,6 +44,12 @@ services:
         tags:
             - { name: serializer.normalizer }
 
+    ms.rpc.serializer.normalizer.soap:
+        class: MS\RpcBundle\Serializer\Normalizer\SoapNormalizer
+        arguments: [ ~, ~, "@ms.property_info.extractor" ]
+        tags:
+            - { name: serializer.normalizer }
+
     ms.rpc.serializer.normalizer.xml_rpc:
         class: MS\RpcBundle\Serializer\Normalizer\XmlRpcNormalizer
         arguments: [ ~, ~, "@ms.property_info.extractor" ]
@@ -54,8 +60,13 @@ services:
     # Encoders
     #
 
-    ms.rpc.serializer.encoder.json_rpc:
-        class: MS\RpcBundle\Serializer\Encoder\JsonRpcEncoder
+    ms.rpc.serializer.encoder.rpc:
+        class: MS\RpcBundle\Serializer\Encoder\RpcEncoder
+        tags:
+            - { name: serializer.encoder }
+
+    ms.rpc.serializer.encoder.soap:
+        class: MS\RpcBundle\Serializer\Encoder\SoapEncoder
         tags:
             - { name: serializer.encoder }
 

@@ -9,23 +9,24 @@
 
 namespace MS\RpcBundle\Serializer\Normalizer;
 
-use MS\RpcBundle\Model\RpcAuth;
-use MS\RpcBundle\Model\RpcError;
-use MS\RpcBundle\Model\XmlRpcRequest;
-use MS\RpcBundle\Model\XmlRpcResponse;
+use MS\RpcBundle\Model\Rpc\Auth;
+use MS\RpcBundle\Model\XmlRpc\Fault;
+use MS\RpcBundle\Model\XmlRpc\Request;
+use MS\RpcBundle\Model\XmlRpc\Response;
 
 class XmlRpcNormalizer extends RpcNormalizer
 {
     protected static $formats = [
         'xml-rpc' => [
-            RpcAuth::class,
-            RpcError::class,
-            XmlRpcRequest::class,
-            XmlRpcResponse::class,
+            Auth::class,
+            Fault::class,
+            Request::class,
+            Response::class,
         ],
     ];
 
     protected $ignoredAttributes = [
+        'version',
         'method',
         'result',
         'error',
