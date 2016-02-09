@@ -9,80 +9,9 @@
 
 namespace MS\RpcBundle\Model\Rpc;
 
-class Error
+use MS\RpcBundle\Model\Rpc\Interfaces\Error as ErrorInterface;
+
+class Error implements ErrorInterface
 {
-    #region property code
-
-    /**
-     * @var int|string
-     */
-    protected $code;
-
-    /**
-     * @return int|string
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
-     * @param int|string $code
-     */
-    public function setCode($code)
-    {
-        $this->code = $code;
-    }
-
-    #endregion
-
-    #region property message
-
-    /**
-     * @var string
-     */
-    protected $message;
-
-    /**
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * @param string $message
-     */
-    public function setMessage($message)
-    {
-        $this->message = $message;
-    }
-
-    #endregion
-
-    #region property data
-
-    /**
-     * @var object
-     */
-    protected $data;
-
-    /**
-     * @return object
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    /**
-     * @param mixed $data
-     */
-    public function setData($data)
-    {
-        $this->data = $data;
-    }
-
-    #endregion
+    use Traits\Error;
 }

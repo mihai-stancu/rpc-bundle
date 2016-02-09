@@ -56,12 +56,14 @@ class ResponseFactory extends AbstractFactory
      */
     public function createFrom(Request $request, RpcRequest $rpcRequest = null, $result)
     {
-        if (!$this->validate($request)) {
+        $requestType = $request->headers->get('Content-Type');
+        $responseType = $request->headers->get('Accept');
+
+        if (!$this->validate($requestType) or !$this->validate($responseType)) {
             throw new RpcException('Invalid protocol or encoding');
         }
 
-        $protocol = $request->headers->get('RPC-Response-Type');
-        $encoding = $request->getContentType();
+        list($protocol, $encoding) = $this->getContentType($requestType);
 
         $rpcResponse = $this->create($protocol);
 

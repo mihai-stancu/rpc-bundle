@@ -9,35 +9,11 @@
 
 namespace MS\RpcBundle\Model\RpcX;
 
-use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
-
 /**
  * RPC Response object.
  */
-class Response extends RpcResponse
+class Response implements Interfaces\Response
 {
-    #region property status
-
-    /**
-     * @var int|string
-     */
-    protected $status;
-
-    /**
-     * @return int|string
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param int|string $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-    #endregion
+    use Traits\Message;
+    use Traits\Response;
 }

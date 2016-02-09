@@ -17,22 +17,35 @@ use MS\RpcBundle\Model\JsonRpcX\Request as JsonRpcXRequest;
 use MS\RpcBundle\Model\JsonRpcX\Response as JsonRpcXResponse;
 use MS\RpcBundle\Model\JsonRpcXS\Request as JsonRpcXSRequest;
 use MS\RpcBundle\Model\JsonRpcXS\Response as JsonRpcXSResponse;
+use MS\RpcBundle\Model\JsonWsp\Request as JsonWspRequest;
+use MS\RpcBundle\Model\JsonWsp\Response as JsonWspResponse;
 use MS\RpcBundle\Model\Rest\Request as RestRequest;
 use MS\RpcBundle\Model\Rest\Response as RestResponse;
 use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
 use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
 use MS\RpcBundle\Model\RpcX\Response as RpcXResponse;
 use MS\RpcBundle\Model\Soap\Request as SoapRequest;
 use MS\RpcBundle\Model\Soap\Response as SoapResponse;
 use MS\RpcBundle\Model\XmlRpc\Request as XmlRpcRequest;
 use MS\RpcBundle\Model\XmlRpc\Response as XmlRpcResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Serializer;
 
 abstract class AbstractFactory
 {
-    const REGEX_CONTENT_TYPE = '/^((app)|(application))\/((x-www-(form)-urlencoded|(\w*+)))$/';
+    const REGEX_CONTENT_TYPE = '
+        /^
+            (?:app|application)
+            \/
+            (?:
+                (?:
+                    (?<protocol>[\w-]*+)
+                    \+
+                )?
+                (?:x-www-)?(?P<encoding>form|[\w-]++)(?:-urlencoded)?
+            )
+        $/x
+    ';
 
     /**
      * @var array|string[]
@@ -43,9 +56,10 @@ abstract class AbstractFactory
             'json-rpc' => JsonRpcRequest::class,
             'json-rpc-x' => JsonRpcXRequest::class,
             'json-rpc-xs' => JsonRpcXSRequest::class,
+            'json-wsp' => JsonWspRequest::class,
             'rest' => RestRequest::class,
             'rpc' => RpcRequest::class,
-            'rpc-x' => JsonRpcRequest::class,
+            'rpc-x' => RpcXRequest::class,
             'soap' => SoapRequest::class,
             'xml-rpc' => XmlRpcRequest::class,
         ],
@@ -54,6 +68,7 @@ abstract class AbstractFactory
             'json-rpc' => JsonRpcResponse::class,
             'json-rpc-x' => JsonRpcXResponse::class,
             'json-rpc-xs' => JsonRpcXSResponse::class,
+            'json-wsp' => JsonWspResponse::class,
             'rest' => RestResponse::class,
             'rpc' => RpcResponse::class,
             'rpc-x' => RpcXResponse::class,
@@ -87,19 +102,63 @@ abstract class AbstractFactory
         $this->serializer = $serializer;
     }
 
+    abstract public function className($protocol);
+
     /**
-     * @param Request|Response $object
+     * @param string $type
      *
      * @return bool
      */
-    public function validate($object)
+    public function validate($type)
     {
-        $protocol = $object->headers->get('RPC-Request-Type');
-        $encoding = $object->headers->get('Content-Type');
-        $encoding = preg_replace(static::REGEX_CONTENT_TYPE, '$6$7', $encoding);
+        list($protocol, $encoding) = $this->getContentType($type);
 
         return in_array($encoding, static::$encodings)
            and array_key_exists($protocol, static::$protocols['request'])
            and array_key_exists($protocol, static::$protocols['response']);
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return array|bool
+     */
+    public function getContentType($type)
+    {
+        preg_match(static::REGEX_CONTENT_TYPE, $type, $matches);
+
+        if (!isset($matches['protocol'], $matches['encoding'])) {
+            return [null, null];
+        }
+
+        return [$matches['protocol'], $matches['encoding']];
+    }
+
+    /**
+     * @param string $accept
+     *
+     * @return string
+     */
+    public function getAcceptType($accept)
+    {
+        if (strpos($accept, '*') === false) {
+            return $accept;
+        }
+
+        $regex = str_replace('*', '[\w-]++', $accept);
+        foreach (static::$protocols as $protocol) {
+            foreach (static::$encodings as $encoding) {
+                $candidate = sprintf(
+                    'application/%s+%s',
+                    $protocol,
+                    $encoding
+                );
+
+                if ($accept === $candidate
+                 or preg_match($regex, $candidate) > 0) {
+                    return $candidate;
+                }
+            }
+        }
     }
 }

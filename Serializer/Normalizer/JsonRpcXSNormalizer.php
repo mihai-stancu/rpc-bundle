@@ -11,14 +11,15 @@ namespace MS\RpcBundle\Serializer\Normalizer;
 
 use MS\RpcBundle\Model\JsonRpcXS\Request as JsonRpcXSRequest;
 use MS\RpcBundle\Model\JsonRpcXS\Response as JsonRpcXSResponse;
-use MS\RpcBundle\Model\Rpc\Auth;
 use MS\RpcBundle\Model\Rpc\Error;
-use MS\RpcBundle\Model\Rpc\Request;
-use MS\RpcBundle\Model\Rpc\Response;
+use MS\RpcBundle\Model\Rpc\Interfaces\Request;
+use MS\RpcBundle\Model\RpcX\Auth;
 
 class JsonRpcXSNormalizer extends RpcNormalizer
 {
     const KEY_CONTROL = 'c';
+    const KEY_PARAMS = 'p';
+    const KEY_RESULT = 'r';
 
     protected static $formats = [
         'json-rpc-xs' => [
@@ -48,7 +49,7 @@ class JsonRpcXSNormalizer extends RpcNormalizer
      * @param string $format
      * @param array  $context
      *
-     * @return Request|Response
+     * @return object
      */
     public function denormalize($data, $class, $format = null, array $context = [])
     {
@@ -68,9 +69,7 @@ class JsonRpcXSNormalizer extends RpcNormalizer
             $data[static::KEY_CONTROL] = $control;
         }
 
-        $object = parent::denormalize($data, $class, $format, $context);
-
-        return $object;
+        return parent::denormalize($data, $class, $format, $context);
     }
 
     /**

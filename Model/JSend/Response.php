@@ -10,10 +10,15 @@
 namespace MS\RpcBundle\Model\JSend;
 
 use MS\RpcBundle\Model\Rpc\Error;
-use MS\RpcBundle\Model\RpcX\Response as RpcXResponse;
+use MS\RpcBundle\Model\Rpc\Interfaces\Response as RpcResponseInterface;
+use MS\RpcBundle\Model\Rpc\Traits\Message as RpcMessageTrait;
+use MS\RpcBundle\Model\Rpc\Traits\Response as RpcResponseTrait;
 
-class Response extends RpcXResponse
+class Response implements RpcResponseInterface
 {
+    use RpcMessageTrait;
+    use RpcResponseTrait;
+
     /**
      * @return array|object
      */

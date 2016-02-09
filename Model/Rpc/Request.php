@@ -9,58 +9,13 @@
 
 namespace MS\RpcBundle\Model\Rpc;
 
+use MS\RpcBundle\Model\Rpc\Interfaces\Request as RequestInterface;
+
 /**
  * RPC Request object.
  */
-class Request extends Message
+class Request implements RequestInterface
 {
-    #region property method
-
-    /**
-     * @var string
-     */
-    protected $method;
-
-    /**
-     * @return string
-     */
-    public function getMethod()
-    {
-        return $this->method;
-    }
-
-    /**
-     * @param string $method
-     */
-    public function setMethod($method)
-    {
-        $this->method = $method;
-    }
-
-    #endregion
-
-    #region property params
-
-    /**
-     * @var array
-     */
-    protected $params = [];
-
-    /**
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param array $params
-     */
-    public function setParams($params)
-    {
-        $this->params = $params;
-    }
-
-    #endregion
+    use Traits\Message;
+    use Traits\Request;
 }

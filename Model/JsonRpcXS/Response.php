@@ -9,32 +9,16 @@
 
 namespace MS\RpcBundle\Model\JsonRpcXS;
 
-use MS\RpcBundle\Model\JsonRpcX\Response as JsonRpcXResponse;
-use MS\RpcBundle\Model\Rpc\Error;
+use MS\RpcBundle\Model\Rpc\Interfaces\Error;
+use MS\RpcBundle\Model\RpcX\Interfaces\Response as RpcXResponseInterface;
+use MS\RpcBundle\Model\RpcX\Traits\Response as RpcXResponseTrait;
 
-class Response extends JsonRpcXResponse
+class Response implements RpcXResponseInterface
 {
-    #region property jsonrpc
+    use Traits\Message;
+    use RpcXResponseTrait;
 
-    protected $version = '2.0.xs';
-
-    /**
-     * @return string
-     */
-    public function getJ()
-    {
-        return $this->getVersion();
-    }
-
-    /**
-     * @param string $j
-     */
-    public function setJ($j)
-    {
-        $this->setVersion($j);
-    }
-
-    #endregion
+    const VERSION = '2.0.xs';
 
     #region property status
 
@@ -92,26 +76,6 @@ class Response extends JsonRpcXResponse
     public function setE(Error $e = null)
     {
         $this->setError($e);
-    }
-
-    #endregion
-
-    #region property id
-
-    /**
-     * @return int|string
-     */
-    public function getI()
-    {
-        return $this->getId();
-    }
-
-    /**
-     * @param int|string $i
-     */
-    public function setI($i)
-    {
-        $this->setId($i);
     }
 
     #endregion

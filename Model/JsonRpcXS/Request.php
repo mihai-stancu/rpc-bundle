@@ -9,32 +9,16 @@
 
 namespace MS\RpcBundle\Model\JsonRpcXS;
 
-use MS\RpcBundle\Model\JsonRpcX\Request as JsonRpcXRequest;
-use MS\RpcBundle\Model\Rpc\Auth;
+use MS\RpcBundle\Model\RpcX\Interfaces\Auth;
+use MS\RpcBundle\Model\RpcX\Interfaces\Request as RpcXRequestInterface;
+use MS\RpcBundle\Model\RpcX\Traits\Request as RpcXRequestTrait;
 
-class Request extends JsonRpcXRequest
+class Request implements RpcXRequestInterface
 {
-    #region property jsonrpc
+    use Traits\Message;
+    use RpcXRequestTrait;
 
-    protected $version = '2.0.xs';
-
-    /**
-     * @return string
-     */
-    public function getJ()
-    {
-        return $this->getVersion();
-    }
-
-    /**
-     * @param string $j
-     */
-    public function setJ($j)
-    {
-        $this->setVersion($j);
-    }
-
-    #endregion
+    const VERSION = '2.0.xs';
 
     #region property control
 
@@ -132,26 +116,6 @@ class Request extends JsonRpcXRequest
     public function setP($p)
     {
         $this->setParams($p);
-    }
-
-    #endregion
-
-    #region property id
-
-    /**
-     * @return array
-     */
-    public function getI()
-    {
-        return $this->getId();
-    }
-
-    /**
-     * @param array $i
-     */
-    public function setI($i)
-    {
-        $this->setId($i);
     }
 
     #endregion

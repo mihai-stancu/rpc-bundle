@@ -9,29 +9,14 @@
 
 namespace MS\RpcBundle\Model\JsonRpc;
 
-use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\JsonRpc\Traits\Message as JsonRpcMessageTrait;
+use MS\RpcBundle\Model\Rpc\Interfaces\Request as RpcRequestInterface;
+use MS\RpcBundle\Model\Rpc\Traits\Request as RpcRequestTrait;
 
-class Request extends RpcRequest
+class Request implements RpcRequestInterface
 {
-    #region property jsonrpc
+    use JsonRpcMessageTrait;
+    use RpcRequestTrait;
 
-    protected $version = '2.0';
-
-    /**
-     * @return string
-     */
-    public function getJsonrpc()
-    {
-        return $this->getVersion();
-    }
-
-    /**
-     * @param string $jsonrpc
-     */
-    public function setJsonrpc($jsonrpc)
-    {
-        $this->setVersion($jsonrpc);
-    }
-
-    #endregion
+    const VERSION = '2.0';
 }

@@ -11,14 +11,15 @@ namespace MS\RpcBundle\Serializer\Normalizer;
 
 use MS\RpcBundle\Model\JSend\Request;
 use MS\RpcBundle\Model\JSend\Response;
-use MS\RpcBundle\Model\Rpc\Auth;
 use MS\RpcBundle\Model\Rpc\Error;
 
 class JSendNormalizer extends RpcNormalizer
 {
+    const KEY_PARAMS = 'params';
+    const KEY_RESULT = 'data';
+
     protected static $formats = [
         'jsend' => [
-            Auth::class,
             Error::class,
             Request::class,
             Response::class,
@@ -29,8 +30,6 @@ class JSendNormalizer extends RpcNormalizer
         'version',
         'method',
         'result',
-
-        'resource',
     ];
 
     /**

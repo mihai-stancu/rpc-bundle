@@ -9,52 +9,11 @@
 
 namespace MS\RpcBundle\Model\Soap;
 
-use MS\RpcBundle\Model\Rpc\Error;
-use MS\RpcBundle\Model\RpcX\Response as RpcXResponse;
+use MS\RpcBundle\Model\Rpc\Interfaces\Response as RpcResponseInterface;
 
-class Response extends RpcXResponse
+class Response implements RpcResponseInterface
 {
-    protected $version = 'http://www.w3.org/2003/05/soap-envelope';
+    use Traits\Envelope;
 
-    /**
-     * @return string
-     */
-    public function getSoap()
-    {
-        return $this->getVersion();
-    }
-
-    /**
-     * @param string $soap
-     */
-    public function setSoap($soap)
-    {
-        $this->setVersion($soap);
-    }
-
-    /**
-     * @return array
-     */
-    public function getBody()
-    {
-        if ($this->getError() !== null) {
-            return $this->getError();
-        }
-
-        return $this->getResult();
-    }
-
-    /**
-     * @param array $body
-     */
-    public function setBody($body)
-    {
-        if ($body instanceof Error) {
-            $this->setError($body);
-
-            return;
-        }
-
-        $this->setResult($body);
-    }
+    const VERSION = 'http://www.w3.org/2003/05/soap-envelope';
 }

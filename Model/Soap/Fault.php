@@ -9,10 +9,13 @@
 
 namespace MS\RpcBundle\Model\Soap;
 
-use MS\RpcBundle\Model\Rpc\Error;
+use MS\RpcBundle\Model\RpcX\Interfaces\Error as RpcErrorInterface;
+use MS\RpcBundle\Model\RpcX\Traits\Error as RpcErrorTrait;
 
-class Fault extends Error
+class Fault implements RpcErrorInterface
 {
+    use RpcErrorTrait;
+
     /**
      * @return string
      */

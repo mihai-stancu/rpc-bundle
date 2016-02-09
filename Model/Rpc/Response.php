@@ -9,66 +9,13 @@
 
 namespace MS\RpcBundle\Model\Rpc;
 
+use MS\RpcBundle\Model\Rpc\Interfaces\Response as ResponseInterface;
+
 /**
  * RPC Response object.
  */
-class Response extends Message
+class Response implements ResponseInterface
 {
-    #region property result
-
-    /**
-     * @var array|object
-     */
-    protected $result;
-
-    /**
-     * @return array|object
-     */
-    public function getResult()
-    {
-        return $this->result;
-    }
-
-    /**
-     * @param array|object $result
-     */
-    public function setResult($result)
-    {
-        if (!empty($result)) {
-            $this->error = null;
-        }
-
-        $this->result = $result;
-    }
-
-    #endregion
-
-    #region property error
-
-    /**
-     * @var Error
-     */
-    protected $error;
-
-    /**
-     * @return Error
-     */
-    public function getError()
-    {
-        return $this->error;
-    }
-
-    /**
-     * @param Error $error
-     */
-    public function setError(Error $error = null)
-    {
-        if (!empty($error)) {
-            $this->result = null;
-        }
-
-        $this->error = $error;
-    }
-
-    #endregion
+    use Traits\Message;
+    use Traits\Response;
 }

@@ -68,7 +68,7 @@ class SoapEncoder extends SerializerAwareEncoder implements EncoderInterface, De
      */
     public function encode($object, $format, array $context = [])
     {
-        $context['xml_root_node_name'] = 'envelope';
+        $context['xml_root_node_name'] = 'soap:Envelope';
 
         $array = $this->serializer->normalize($object, $format);
 

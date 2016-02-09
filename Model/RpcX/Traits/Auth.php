@@ -7,9 +7,9 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model\Rpc;
+namespace MS\RpcBundle\Model\RpcX\Traits;
 
-class Auth
+trait Auth
 {
     #region property id
 
@@ -57,56 +57,6 @@ class Auth
     public function setToken($token)
     {
         $this->token = $token;
-    }
-
-    #endregion
-
-    #region property user
-
-    /**
-     * @var string
-     */
-    protected $user;
-
-    /**
-     * @return string
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param string $user
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-    }
-
-    #endregion
-
-    #region property pass
-
-    /**
-     * @var string
-     */
-    protected $pass;
-
-    /**
-     * @return string
-     */
-    public function getPass()
-    {
-        return $this->pass;
-    }
-
-    /**
-     * @param string $pass
-     */
-    public function setPass($pass)
-    {
-        $this->pass = $pass;
     }
 
     #endregion

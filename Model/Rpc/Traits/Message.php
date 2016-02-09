@@ -7,9 +7,9 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Model\Rpc;
+namespace MS\RpcBundle\Model\Rpc\Traits;
 
-class Message
+trait Message
 {
     #region property version
 
@@ -20,6 +20,10 @@ class Message
      */
     public function getVersion()
     {
+        if ($this->version === null and defined(static::class.'::VERSION')) {
+            $this->version = constant(static::class.'::VERSION');
+        }
+
         return $this->version;
     }
 

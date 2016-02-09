@@ -11,14 +11,15 @@ namespace MS\RpcBundle\Serializer\Normalizer;
 
 use MS\RpcBundle\Model\Rest\Request;
 use MS\RpcBundle\Model\Rest\Response;
-use MS\RpcBundle\Model\Rpc\Auth;
 use MS\RpcBundle\Model\Rpc\Error;
 
 class RestNormalizer extends RpcNormalizer
 {
+    const KEY_PARAMS = 'params';
+    const KEY_RESULT = 'data';
+
     protected static $formats = [
         'rest' => [
-            Auth::class,
             Error::class,
             Request::class,
             Response::class,

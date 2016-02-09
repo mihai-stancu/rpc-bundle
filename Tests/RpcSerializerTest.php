@@ -11,6 +11,7 @@ namespace MS\RpcBundle\Tests;
 
 use MS\RpcBundle\Factory\RequestFactory;
 use MS\RpcBundle\Factory\ResponseFactory;
+use MS\RpcBundle\Model\JsonWsp\Fault as JsonWspFault;
 use MS\RpcBundle\Model\Rpc\Error;
 use MS\RpcBundle\Model\Rpc\Request;
 use MS\RpcBundle\Model\Rpc\Response;
@@ -19,18 +20,22 @@ use MS\RpcBundle\Model\XmlRpc\Fault as XmlRpcFault;
 use MS\RpcBundle\Serializer\Encoder\RpcEncoder;
 use MS\RpcBundle\Serializer\Encoder\SoapEncoder;
 use MS\RpcBundle\Serializer\Encoder\XmlRpcEncoder;
+use MS\RpcBundle\Serializer\NameConverter\SoapNameConverter;
 use MS\RpcBundle\Serializer\Normalizer\JSendNormalizer;
 use MS\RpcBundle\Serializer\Normalizer\JsonRpcXSNormalizer;
+use MS\RpcBundle\Serializer\Normalizer\JsonWspNormalizer;
 use MS\RpcBundle\Serializer\Normalizer\RestNormalizer;
 use MS\RpcBundle\Serializer\Normalizer\RpcNormalizer;
 use MS\RpcBundle\Serializer\Normalizer\SoapNormalizer;
 use MS\RpcBundle\Serializer\Normalizer\XmlRpcNormalizer;
-use MS\SerializerBundle\Serializer\Normalizer\ArrayDenormalizer;
-use MS\SerializerBundle\Serializer\Normalizer\DataUriNormalizer;
+use MS\SerializerBundle\Serializer\Normalizer\BinaryNormalizer;
 use MS\SerializerBundle\Serializer\Normalizer\DateTimeNormalizer;
+use MS\SerializerBundle\Serializer\Normalizer\MixedArrayDenormalizer;
+use MS\SerializerBundle\Serializer\Normalizer\MixedDenormalizer;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Exception\RuntimeException;
+use Symfony\Component\Serializer\Normalizer\CustomNormalizer;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Normalizer\SerializerAwareNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -38,32 +43,33 @@ use Symfony\Component\Serializer\Serializer;
 class RpcSerializerTest extends \PHPUnit_Framework_TestCase
 {
     protected static $protocols = [
-        //'jsend',
+        /*//'jsend',
         'json-rpc',
         'json-rpc-x',
-        'json-rpc-xs',
-        'rest',
+        'json-rpc-xs',*/
+        'json-wsp',
+        /*'rest',
         'rpc',
         'rpc-x',
         //'soap',
-        'xml-rpc',
+        'xml-rpc',*/
     ];
 
     protected static $encoders = [
-        //'bencode' => 'MS\SerializerBundle\Serializer\Encoder\BencodeEncoder',
+        /*//'bencode' => 'MS\SerializerBundle\Serializer\Encoder\BencodeEncoder',
         'bson' => 'MS\SerializerBundle\Serializer\Encoder\BsonEncoder',
         'cbor' => 'MS\SerializerBundle\Serializer\Encoder\CborEncoder',
         'export' => 'MS\SerializerBundle\Serializer\Encoder\ExportEncoder',
         //'form' => 'MS\SerializerBundle\Serializer\Encoder\FormEncoder',
-        'igbinary' => 'MS\SerializerBundle\Serializer\Encoder\IgbinaryEncoder',
+        'igbinary' => 'MS\SerializerBundle\Serializer\Encoder\IgbinaryEncoder',*/
         'json' => 'Symfony\Component\Serializer\Encoder\JsonEncoder',
-        'msgpack' => 'MS\SerializerBundle\Serializer\Encoder\MsgpackEncoder',
+        /*'msgpack' => 'MS\SerializerBundle\Serializer\Encoder\MsgpackEncoder',
         'rison' => 'MS\SerializerBundle\Serializer\Encoder\RisonEncoder',
         'serialize' => 'MS\SerializerBundle\Serializer\Encoder\SerializeEncoder',
         'tnetstring' => 'MS\SerializerBundle\Serializer\Encoder\TnetstringEncoder',
         'ubjson' => 'MS\SerializerBundle\Serializer\Encoder\UbjsonEncoder',
         'yaml' => 'MS\SerializerBundle\Serializer\Encoder\YamlEncoder',
-        'xml' => 'Symfony\Component\Serializer\Encoder\XmlEncoder',
+        'xml' => 'Symfony\Component\Serializer\Encoder\XmlEncoder',*/
     ];
 
     protected static $cases = [
@@ -88,16 +94,19 @@ class RpcSerializerTest extends \PHPUnit_Framework_TestCase
 
         /** @var SerializerAwareNormalizer[] $normalizers */
         $normalizers = [];
-        $normalizers[] = new ArrayDenormalizer();
+        $normalizers[] = new MixedArrayDenormalizer();
         $normalizers[] = new DateTimeNormalizer();
-        $normalizers[] = new DataUriNormalizer();
+        $normalizers[] = new BinaryNormalizer();
         $normalizers[] = new JSendNormalizer(null, null, $propertyInfo);
         $normalizers[] = new JsonRpcXSNormalizer(null, null, $propertyInfo);
+        $normalizers[] = new JsonWspNormalizer(null, null, $propertyInfo);
         $normalizers[] = new RestNormalizer(null, null, $propertyInfo);
         $normalizers[] = new RpcNormalizer(null, null, $propertyInfo);
-        $normalizers[] = new SoapNormalizer(null, null, $propertyInfo);
+        $normalizers[] = new SoapNormalizer(null, new SoapNameConverter(), $propertyInfo);
         $normalizers[] = new XmlRpcNormalizer(null, null, $propertyInfo);
+        $normalizers[] = new CustomNormalizer(null, null, $propertyInfo);
         $normalizers[] = new GetSetMethodNormalizer();
+        $normalizers[] = new MixedDenormalizer();
 
         $encoders = [];
         $encoders[] = new RpcEncoder();
@@ -132,8 +141,9 @@ class RpcSerializerTest extends \PHPUnit_Framework_TestCase
             'The quick brown fox jumps over the lazy dog.',
             [1, 2, 3, 4, 5],
             ['a' => 'a', 'b' => 'b', 'c' => 'c'],
-            //\DateTime::createFromFormat(\DateTime::ISO8601, '2014-04-03T12:00:33+0000'),
-            //new \SplFileObject(__DIR__.'/data/beacon.gif'),
+            //\DateTime::createFromFormat('Y-m-d\TH:i:sP', '2014-04-03T12:00:33+02:00'),
+            /*file_get_contents(__DIR__.'/data/beacon.gif'),
+            new \SplFileObject(__DIR__.'/data/beacon.gif'),*/
         ];
     }
 
@@ -174,11 +184,14 @@ class RpcSerializerTest extends \PHPUnit_Framework_TestCase
         $object = $this->responseFactory->create($protocol);
 
         $error = new Error();
+        if ($protocol === 'soap') {
+            $error = new SoapFault();
+        }
         if ($protocol === 'xml-rpc') {
             $error = new XmlRpcFault();
         }
-        if ($protocol === 'soap') {
-            $error = new SoapFault();
+        if ($protocol === 'json-wsp') {
+            $error = new JsonWspFault();
         }
 
         $object->setError($error);
@@ -190,16 +203,6 @@ class RpcSerializerTest extends \PHPUnit_Framework_TestCase
 
     public function dataProviderRpcSerializer()
     {
-        global $argv;
-        if (isset($argv[2])) {
-            static::$protocols = [$argv[2]];
-        }
-        if (isset($argv[4])) {
-            static::$encoders = [
-                $argv[4] => static::$encoders[$argv[4]],
-            ];
-        }
-
         $tests = [];
         foreach (static::$protocols as $protocol) {
             foreach (static::$encoders as $encoding => $class) {
@@ -241,9 +244,7 @@ class RpcSerializerTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(
                 $expected,
                 $actual,
-                $encoding.' failed to encode/decode an object identically.',
-                //."\n".$string."\n",
-                0.0001
+                $encoding.' failed to encode/decode an object identically.'
             );
         } catch (RuntimeException $ex) {
             $this->markTestSkipped('Test skipped due to missing dependency: '.$ex->getMessage());

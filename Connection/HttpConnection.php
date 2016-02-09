@@ -58,11 +58,10 @@ class HttpConnection extends AbstractConnection
     {
         $method = 'POST';
         $uri = $this->endpoint['base_uri'];
+        $contentType = sprintf('application/%s+%s', $this->protocol, $this->encoding);
         $headers = [
-            'Accept' => 'application/'.$this->encoding,
-            'Content-Type' => 'application/'.$this->encoding,
-            'RPC-Request-Type' => $this->protocol,
-            'RPC-Response-Type' => $this->protocol,
+            'Content-Type' => $contentType,
+            'Accept' => $contentType,
         ];
 
         $format = $this->protocol;

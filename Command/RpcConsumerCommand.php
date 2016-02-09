@@ -13,4 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 class RpcConsumerCommand extends ContainerAwareCommand
 {
+    public function configure()
+    {
+        $this->setName('ms:rpc:consumer');
+    }
 }

@@ -13,22 +13,23 @@ use MS\RpcBundle\Model\JsonRpc\Request as JsonRpcRequest;
 use MS\RpcBundle\Model\JsonRpc\Response as JsonRpcResponse;
 use MS\RpcBundle\Model\JsonRpcX\Request as JsonRpcXRequest;
 use MS\RpcBundle\Model\JsonRpcX\Response as JsonRpcXResponse;
-use MS\RpcBundle\Model\Rpc\Auth;
 use MS\RpcBundle\Model\Rpc\Error;
 use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
 use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+use MS\RpcBundle\Model\RpcX\Auth;
 use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
 use MS\RpcBundle\Model\RpcX\Response as RpcXResponse;
 use MS\SerializerBundle\Serializer\Normalizer\MixedArrayDenormalizer;
-use MS\SerializerBundle\Serializer\Normalizer\MixedDenormalizer;
 use MS\SerializerBundle\Serializer\Normalizer\TypehintNormalizer;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 
 class RpcNormalizer extends TypehintNormalizer implements SerializerAwareInterface
 {
+    const KEY_PARAMS = 'params';
+    const KEY_RESULT = 'result';
+
     protected static $formats = [
         'json-rpc' => [
-            Auth::class,
             Error::class,
             JsonRpcRequest::class,
             JsonRpcResponse::class,
@@ -40,7 +41,6 @@ class RpcNormalizer extends TypehintNormalizer implements SerializerAwareInterfa
             JsonRpcXResponse::class,
         ],
         'rpc' => [
-            Auth::class,
             Error::class,
             RpcRequest::class,
             RpcResponse::class,
@@ -67,11 +67,14 @@ class RpcNormalizer extends TypehintNormalizer implements SerializerAwareInterfa
      */
     public function denormalize($data, $class, $format = null, array $context = [])
     {
-        if (!empty($data['params'])) {
-            $type = MixedArrayDenormalizer::FORMAT;
-            $format = MixedDenormalizer::FORMAT;
+        foreach ([static::KEY_PARAMS, static::KEY_RESULT] as $key) {
+            if (empty($data[$key])) {
+                continue;
+            }
 
-            $data['params'] = $this->serializer->denormalize($data['params'], $type, $format, $context);
+            $class = isset($context['params']) ? $context['params'] : MixedArrayDenormalizer::TYPE;
+
+            $data[$key] = $this->serializer->denormalize($data[$key], $class, $context['encoding'], $context);
         }
 
         return parent::denormalize($data, $class, $format, $context);

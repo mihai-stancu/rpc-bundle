@@ -9,10 +9,15 @@
 
 namespace MS\RpcBundle\Model\XmlRpc;
 
-use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+use MS\RpcBundle\Model\Rpc\Interfaces\Response as RpcResponseInterface;
+use MS\RpcBundle\Model\Rpc\Traits\Message as RpcMessageTrait;
+use MS\RpcBundle\Model\Rpc\Traits\Response as RpcResponseTrait;
 
-class Response extends RpcResponse
+class Response implements RpcResponseInterface
 {
+    use RpcMessageTrait;
+    use RpcResponseTrait;
+
     #region property result
 
     /**

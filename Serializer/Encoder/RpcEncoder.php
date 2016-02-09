@@ -24,6 +24,7 @@ class RpcEncoder extends SerializerAwareEncoder implements EncoderInterface, Dec
         'json-rpc',
         'json-rpc-x',
         'json-rpc-xs',
+        'json-wsp',
         'rest',
         'rpc',
         'rpc-x',

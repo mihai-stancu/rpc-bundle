@@ -9,7 +9,6 @@
 
 namespace MS\RpcBundle\EventListener;
 
-use MS\RpcBundle\Factory\AbstractFactory;
 use MS\RpcBundle\Factory\ResponseFactory;
 use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
 use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
@@ -40,7 +39,10 @@ class ResponseListener
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         $request = $event->getRequest();
-        if (!$this->factory->validate($request)) {
+        $requestType = $request->headers->get('Content-Type');
+        $responseType = $request->headers->get('Accept');
+
+        if (!$this->factory->validate($requestType) or !$this->factory->validate($responseType)) {
             return;
         }
 
@@ -58,7 +60,10 @@ class ResponseListener
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $request = $event->getRequest();
-        if (!$this->factory->validate($request)) {
+        $requestType = $request->headers->get('Content-Type');
+        $responseType = $request->headers->get('Accept');
+
+        if (!$this->factory->validate($requestType) or !$this->factory->validate($responseType)) {
             return;
         }
 
@@ -80,19 +85,8 @@ class ResponseListener
     protected function getResponse(GetResponseEvent $event, Request $request, RpcRequest $rpcRequest = null)
     {
         $response = $event->getResponse() ?: new Response();
-
-        $acceptType = $request->headers->get('Accept');
-        $contentType = $request->getContentType();
-        if (!in_array($acceptType, ['*/*', $contentType])) {
-            $contentType = $acceptType;
-        }
-        $response->headers->set('Content-Type', $contentType);
-
-        $rpcProtocol = $request->headers->get('RPC-Response-Type');
-        if ($rpcProtocol === null) {
-            $rpcProtocol = $request->headers->get('RPC-Request-Type');
-        }
-        $response->headers->set('RPC-Response-Type', $rpcProtocol);
+        $accept = $request->headers->get('Accept');
+        $response->headers->set('Content-Type', $accept);
 
         return $response;
     }
@@ -104,13 +98,10 @@ class ResponseListener
      */
     protected function setResponse(GetResponseEvent $event, Response $response, RpcResponse $rpcResponse)
     {
-        $protocol = $response->headers->get('RPC-Response-Type');
-        $encoding = $response->headers->get('Content-Type');
-        $encoding = preg_replace(AbstractFactory::REGEX_CONTENT_TYPE, '$6$7', $encoding);
-
+        $responseType = $response->headers->get('Content-Type');
+        list($protocol, $encoding) = $this->factory->getContentType($responseType);
         $content = $this->serializer->serialize($rpcResponse, $protocol, ['encoding' => $encoding]);
         $response->setContent($content);
-
         $event->setResponse($response);
     }
 }

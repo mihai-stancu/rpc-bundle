@@ -9,10 +9,15 @@
 
 namespace MS\RpcBundle\Model\XmlRpc;
 
-use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Interfaces\Request as RpcRequestInterface;
+use MS\RpcBundle\Model\Rpc\Traits\Message as RpcMessageTrait;
+use MS\RpcBundle\Model\Rpc\Traits\Request as RpcRequestTrait;
 
-class Request extends RpcRequest
+class Request implements RpcRequestInterface
 {
+    use RpcMessageTrait;
+    use RpcRequestTrait;
+
     #region property method
 
     /**
