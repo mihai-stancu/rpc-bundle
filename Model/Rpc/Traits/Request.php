@@ -59,5 +59,25 @@ trait Request
         $this->params = $params;
     }
 
+    /**
+     * @param mixed $value
+     * @param string $key
+     */
+    public function addParam($value, $key = null)
+    {
+        if ($key !== null) {
+            $this->params[$key] = $value;
+
+            return;
+        }
+
+        $this->params[] = $value;
+    }
+
+    public function removeParam($key)
+    {
+
+    }
+
     #endregion
 }

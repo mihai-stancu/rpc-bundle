@@ -14,7 +14,7 @@ use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
 use MS\RpcBundle\RpcException;
 use Symfony\Component\HttpFoundation\Request;
 
-class RequestFactory extends AbstractFactory
+class RequestFactory extends ModelFactory
 {
     /**
      * @param $protocol
@@ -23,7 +23,7 @@ class RequestFactory extends AbstractFactory
      */
     public function className($protocol)
     {
-        return static::$protocols['request'][$protocol];
+        return $this->protocols['request'][$protocol];
     }
 
     /**
@@ -35,7 +35,7 @@ class RequestFactory extends AbstractFactory
      */
     public function create($protocol)
     {
-        $class = static::$protocols['request'][$protocol];
+        $class = $this->protocols['request'][$protocol];
 
         return new $class();
     }
@@ -44,13 +44,12 @@ class RequestFactory extends AbstractFactory
      * Create RPC request object from HTTP request object.
      *
      * @param Request           $request
-     * @param \ReflectionMethod $reflectionMethod
      *
      * @throws RpcException
      *
      * @return RpcRequest|RpcXRequest
      */
-    public function createFrom(Request $request, \ReflectionMethod $reflectionMethod = null)
+    public function createFrom(Request $request)
     {
         $requestType = $request->headers->get('Content-Type');
         $responseType = $request->headers->get('Accept');

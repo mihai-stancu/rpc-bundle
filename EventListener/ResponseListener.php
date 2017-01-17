@@ -46,7 +46,7 @@ class ResponseListener
             return;
         }
 
-        $rpcRequest = $request->attributes->get('rpcRequest');
+        $rpcRequest = $request->attributes->get('_rpcRequest');
         $rpcResponse = $event->getControllerResult();
 
         $response = $this->getResponse($event, $request, $rpcRequest);
@@ -67,7 +67,7 @@ class ResponseListener
             return;
         }
 
-        $rpcRequest = $request->attributes->get('rpcRequest');
+        $rpcRequest = $request->attributes->get('_rpcRequest');
         $response = $this->getResponse($event, $request, $rpcRequest);
         $exception = $event->getException();
         $rpcResponse = $this->factory->createFrom($request, $rpcRequest, $exception);

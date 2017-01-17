@@ -13,16 +13,10 @@ use MS\RpcBundle\Model\Rpc\Request;
 use MS\RpcBundle\Model\Rpc\Response;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
-class ZmqConnection extends QueueConnection
+class GearmanConnection extends QueueConnection
 {
-    /** @var \ZMQSocket */
-    protected $socket;
-
-    /** @var \ZMQContext */
-    protected $context;
-
-    /** @var int  */
-    protected $mode = \ZMQ::MODE_DONTWAIT;
+    /** @var \GearmanClient */
+    protected $client;
 
     /**
      * @param array $context
@@ -32,13 +26,10 @@ class ZmqConnection extends QueueConnection
     {
         parent::__construct($context, $endpoint);
 
-        list($type, $dsn, $force, $mode) = array_values($this->endpoint);
+        list($host, $port) = array_values($this->endpoint);
 
-        $this->context = new \ZMQContext();
-        $this->socket = new \ZMQSocket($this->context, $type);
-        $this->socket->bind($dsn, $force);
-
-        $this->mode = $mode;
+        $this->client = new \GearmanClient();
+        $this->client->addServer($host, $port);
     }
 
     /**
@@ -85,6 +76,6 @@ class ZmqConnection extends QueueConnection
             ['encoding' => $this->encoding]
         );
 
-        $this->socket->send($message, $mode);
+        $this->client->send($message, $mode);
     }
 }

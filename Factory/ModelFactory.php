@@ -31,7 +31,7 @@ use MS\RpcBundle\Model\XmlRpc\Request as XmlRpcRequest;
 use MS\RpcBundle\Model\XmlRpc\Response as XmlRpcResponse;
 use Symfony\Component\Serializer\Serializer;
 
-abstract class AbstractFactory
+abstract class ModelFactory
 {
     const REGEX_CONTENT_TYPE = '
         /^
@@ -50,7 +50,7 @@ abstract class AbstractFactory
     /**
      * @var array|string[]
      */
-    protected static $protocols = [
+    protected $protocols = [
         'request' => [
             'jsend' => JSendRequest::class,
             'json-rpc' => JsonRpcRequest::class,
@@ -77,7 +77,7 @@ abstract class AbstractFactory
         ],
     ];
 
-    protected static $encodings = [
+    protected $encodings = [
         'bencode',
         'bson',
         'cbor',
@@ -113,9 +113,9 @@ abstract class AbstractFactory
     {
         list($protocol, $encoding) = $this->getContentType($type);
 
-        return in_array($encoding, static::$encodings)
-           and array_key_exists($protocol, static::$protocols['request'])
-           and array_key_exists($protocol, static::$protocols['response']);
+        return in_array($encoding, $this->encodings)
+           and array_key_exists($protocol, $this->protocols['request'])
+           and array_key_exists($protocol, $this->protocols['response']);
     }
 
     /**
@@ -146,8 +146,8 @@ abstract class AbstractFactory
         }
 
         $regex = str_replace('*', '[\w-]++', $accept);
-        foreach (static::$protocols as $protocol) {
-            foreach (static::$encodings as $encoding) {
+        foreach ($this->protocols as $protocol) {
+            foreach ($this->encodings as $encoding) {
                 $candidate = sprintf(
                     'application/%s+%s',
                     $protocol,

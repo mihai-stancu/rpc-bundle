@@ -9,20 +9,17 @@
 
 namespace MS\RpcBundle\Connection;
 
-use MS\RpcBundle\Model\Rpc\Request;
-use MS\RpcBundle\Model\Rpc\Response;
+use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
+use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 
-class ZmqConnection extends QueueConnection
+class KafkaConnection extends QueueConnection
 {
-    /** @var \ZMQSocket */
-    protected $socket;
+    /** @var \Kafka */
+    protected $client;
 
-    /** @var \ZMQContext */
-    protected $context;
-
-    /** @var int  */
-    protected $mode = \ZMQ::MODE_DONTWAIT;
+    /** @var string */
+    protected $topic;
 
     /**
      * @param array $context
@@ -32,13 +29,10 @@ class ZmqConnection extends QueueConnection
     {
         parent::__construct($context, $endpoint);
 
-        list($type, $dsn, $force, $mode) = array_values($this->endpoint);
+        list($brokers, $username, $password, $headers, $destination) = array_values($this->endpoint);
 
-        $this->context = new \ZMQContext();
-        $this->socket = new \ZMQSocket($this->context, $type);
-        $this->socket->bind($dsn, $force);
-
-        $this->mode = $mode;
+        $this->client = new \Kafka($brokers, $username, $password, $headers);
+        $this->topic = $destination;
     }
 
     /**
@@ -50,12 +44,11 @@ class ZmqConnection extends QueueConnection
      */
     protected function prepareEndpoint(array $endpoint = [])
     {
-        $required = ['type', 'dsn'];
+        $required = ['brokers', 'topic'];
         $defaults = [
-            'type' => null,
-            'dsn' => null,
-            'force' => false,
-            'mode' => null,
+            'brokers' => null,
+            'headers' => [],
+            'topic' => null,
         ];
 
         $endpoint = array_merge($defaults, $endpoint);
@@ -67,17 +60,25 @@ class ZmqConnection extends QueueConnection
             }
         }
 
+        if (is_array($endpoint['topic'])) {
+            $destination = reset($endpoint['topic']);
+            $endpoint['topic'] = array_shift($endpoint['topic']);
+            $endpoint['topic'] = vsprintf($destination, $endpoint['topic']);
+        }
+
         return $endpoint;
     }
 
     /**
-     * @param Request $rpcRequest
+     * @param RpcRequest $rpcRequest
      *
-     * @return Response|null
+     * @return RpcResponse|null
      */
-    protected function sendRequest(Request $rpcRequest)
+    protected function sendRequest(RpcRequest $rpcRequest)
     {
-        $mode = $this->mode;
+        $topic = $this->topic;
+        $contentType = sprintf('application/%s+%s', $this->protocol, $this->encoding);
+        $headers = ['content-type' => $contentType];
 
         $message = $this->serializer->serialize(
             $rpcRequest,
@@ -85,6 +86,8 @@ class ZmqConnection extends QueueConnection
             ['encoding' => $this->encoding]
         );
 
-        $this->socket->send($message, $mode);
+        $this->client->produce($topic, $message);
+
+        return;
     }
 }

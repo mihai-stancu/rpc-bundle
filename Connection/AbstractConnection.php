@@ -11,118 +11,39 @@ namespace MS\RpcBundle\Connection;
 
 use MS\RpcBundle\Factory\RequestFactory;
 use MS\RpcBundle\Factory\ResponseFactory;
-use MS\RpcBundle\Model\Rpc\Request;
-use MS\RpcBundle\Model\Rpc\Response;
-use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
+use MS\RpcBundle\Model\Rpc\Interfaces\Request as RpcRequestInterface;
+use MS\RpcBundle\Model\Rpc\Interfaces\Response as RpcResponseInterface;
+use MS\RpcBundle\Model\RpcX\Interfaces\Request as RpcXRequestInterface;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-abstract class AbstractConnection implements SerializerAwareInterface, Connection
+abstract class AbstractConnection implements Connection, SerializerAwareInterface, ContainerAwareInterface
 {
+    /** @var  ContainerInterface */
+    protected $container;
+
+    /**
+     * @return ContainerInterface
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
+
+    /**
+     * @param ContainerInterface $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
     /** @var  SerializerInterface|DenormalizerInterface */
     protected $serializer;
-
-    /** @var  RequestFactory */
-    protected $requestFactory;
-
-    /** @var  ResponseFactory */
-    protected $responseFactory;
-
-    /** @var  string */
-    protected $protocol;
-
-    /** @var  string */
-    protected $encoding;
-
-    /** @var array */
-    protected $endpoint;
-
-    /** @var  bool */
-    protected $synchronous;
-
-    /**
-     * @param string $protocol
-     * @param string $encoding
-     * @param bool   $synchronous
-     * @param array  $endpoint
-     */
-    public function __construct(
-        $protocol,
-        $encoding,
-        $synchronous = false,
-        array $endpoint = []
-    ) {
-        $this->protocol = $protocol;
-        $this->encoding = $encoding;
-        $this->synchronous = $synchronous;
-        $this->endpoint = $this->prepareEndpoint($endpoint);
-    }
-
-    /**
-     * @param array $endpoint
-     *
-     * @throws InvalidConfigurationException
-     *
-     * @returns array
-     */
-    protected function prepareEndpoint(array $endpoint = [])
-    {
-        $message = sprintf('%s does not implement the %s method', get_called_class(), __FUNCTION__);
-        throw new InvalidConfigurationException($message);
-    }
-
-    /**
-     * @param Request $rpcRequest
-     * @param string  $resultType
-     *
-     * @throws InvalidConfigurationException
-     *
-     * @return Response|null
-     */
-    protected function sendRequest(Request $rpcRequest, $resultType = null)
-    {
-        $message = sprintf('%s does not implement the %s method', get_called_class(), __FUNCTION__);
-        throw new InvalidConfigurationException($message);
-    }
-
-    /**
-     * @param string $service
-     * @param string $method
-     * @param array  $params
-     * @param string $resultResultType
-     *
-     * @throws InvalidConfigurationException
-     *
-     * @return mixed
-     */
-    public function send($service, $method, array $params = [], $resultResultType = null)
-    {
-        $rpcProtocol = $this->protocol;
-        $rpcRequest = $this->getRequestFactory()->create($rpcProtocol);
-
-        if ($this->synchronous) {
-            $rpcId = bin2hex(openssl_random_pseudo_bytes(16));
-            $rpcRequest->setId($rpcId);
-        }
-
-        $rpcRequest->setMethod($service.':'.$method);
-        if ($rpcRequest instanceof RpcXRequest) {
-            $rpcRequest->setService($service);
-            $rpcRequest->setMethod($method);
-        }
-
-        $rpcRequest->setParams($params);
-        $rpcResponse = $this->sendRequest($rpcRequest, $resultResultType);
-
-        $result = null;
-        if ($rpcResponse instanceof Response) {
-            $result = $rpcResponse->getResult();
-        }
-
-        return $result;
-    }
 
     /**
      * @return SerializerInterface
@@ -140,6 +61,9 @@ abstract class AbstractConnection implements SerializerAwareInterface, Connectio
         $this->serializer = $serializer;
     }
 
+    /** @var  RequestFactory */
+    protected $requestFactory;
+
     /**
      * @return RequestFactory
      */
@@ -156,6 +80,9 @@ abstract class AbstractConnection implements SerializerAwareInterface, Connectio
         $this->requestFactory = $requestFactory;
     }
 
+    /** @var  ResponseFactory */
+    protected $responseFactory;
+
     /**
      * @return ResponseFactory
      */
@@ -170,5 +97,90 @@ abstract class AbstractConnection implements SerializerAwareInterface, Connectio
     public function setResponseFactory($responseFactory)
     {
         $this->responseFactory = $responseFactory;
+    }
+
+    /** @var  string */
+    protected $protocol;
+
+    /** @var  string */
+    protected $encoding;
+
+    /** @var  bool */
+    protected $synchronous;
+
+    /** @var array */
+    protected $endpoint;
+
+    /**
+     * @param array $context
+     * @param array $endpoint
+     */
+    public function __construct(array $context = [], array $endpoint = [])
+    {
+        list($this->protocol, $this->encoding, $this->synchronous) = $context;
+
+        $this->endpoint = $this->prepareEndpoint($endpoint);
+    }
+
+    /**
+     * @param array $endpoint
+     *
+     * @throws InvalidConfigurationException
+     *
+     * @returns array
+     */
+    protected function prepareEndpoint(array $endpoint = [])
+    {
+        $message = sprintf('%s does not implement the %s method', get_called_class(), __FUNCTION__);
+        throw new InvalidConfigurationException($message);
+    }
+
+    /**
+     * @param RpcRequestInterface $rpcRequest
+     *
+     * @throws InvalidConfigurationException
+     *
+     * @return RpcResponseInterface|null
+     */
+    protected function sendRequest(RpcRequestInterface $rpcRequest)
+    {
+        $message = sprintf('%s does not implement the %s method', get_called_class(), __FUNCTION__);
+        throw new InvalidConfigurationException($message);
+    }
+
+    /**
+     * @param string $service
+     * @param string $method
+     * @param array  $params
+     *
+     * @throws InvalidConfigurationException
+     *
+     * @return mixed
+     */
+    public function send($service, $method, array $params = [])
+    {
+        $rpcProtocol = $this->protocol;
+        $rpcRequest = $this->getRequestFactory()->create($rpcProtocol);
+
+        if ($this->synchronous) {
+            $rpcId = bin2hex(openssl_random_pseudo_bytes(16));
+            $rpcRequest->setId($rpcId);
+        }
+
+        $rpcRequest->setMethod($service.':'.$method);
+        if ($rpcRequest instanceof RpcXRequestInterface) {
+            $rpcRequest->setService($service);
+            $rpcRequest->setMethod($method);
+        }
+
+        $rpcRequest->setParams($params);
+        $rpcResponse = $this->sendRequest($rpcRequest);
+
+        $result = null;
+        if ($rpcResponse instanceof RpcResponseInterface) {
+            $result = $rpcResponse->getResult();
+        }
+
+        return $result;
     }
 }

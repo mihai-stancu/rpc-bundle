@@ -31,18 +31,12 @@ class AmqpConnection extends QueueConnection
     protected $flags = AMQP_NOPARAM;
 
     /**
-     * @param string $protocol
-     * @param string $encoding
-     * @param bool   $synchronous
-     * @param array  $endpoint
+     * @param array $context
+     * @param array $endpoint
      */
-    public function __construct(
-        $protocol,
-        $encoding,
-        $synchronous = false,
-        array $endpoint = []
-    ) {
-        parent::__construct($protocol, $encoding, $synchronous, $endpoint);
+    public function __construct(array $context = [], array $endpoint = [])
+    {
+        parent::__construct($context, $endpoint);
 
         list($exchangeName, $routingKey) = array_values($this->endpoint);
 
@@ -96,20 +90,16 @@ class AmqpConnection extends QueueConnection
      */
     protected function sendRequest(Request $rpcRequest)
     {
+        $contentType = 'application/'.$this->protocol.'+'.$this->encoding;
+        $routingKey = $this->routingKey;
+        $flags = $this->flags;
+        $attributes = ['content-type' => $contentType];
+
         $message = $this->serializer->serialize(
             $rpcRequest,
             $this->protocol,
             ['encoding' => $this->encoding]
         );
-
-        $routingKey = $this->routingKey;
-
-        $flags = $this->flags;
-
-        $attributes = [
-            'content_type' => 'application/'.$this->encoding,
-            'rpc_type' => $this->protocol,
-        ];
 
         $this->exchange->publish($message, $routingKey, $flags, $attributes);
     }

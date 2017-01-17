@@ -14,8 +14,8 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ServerException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
-use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
+use MS\RpcBundle\Model\Rpc\Interfaces\Request as RpcRequestInterface;
+use MS\RpcBundle\Model\Rpc\Interfaces\Response as RpcResponseInterface;
 
 class HttpConnection extends AbstractConnection
 {
@@ -23,18 +23,12 @@ class HttpConnection extends AbstractConnection
     protected $client;
 
     /**
-     * @param string $protocol
-     * @param string $encoding
-     * @param bool   $synchronous
-     * @param array  $endpoint
+     * @param array $context
+     * @param array $endpoint
      */
-    public function __construct(
-        $protocol,
-        $encoding,
-        $synchronous = false,
-        array $endpoint = []
-    ) {
-        parent::__construct($protocol, $encoding, $synchronous, $endpoint);
+    public function __construct(array $context = [], array $endpoint = [])
+    {
+        parent::__construct($context, $endpoint);
 
         $this->client = new Client($this->endpoint);
     }
@@ -50,11 +44,11 @@ class HttpConnection extends AbstractConnection
     }
 
     /**
-     * @param RpcRequest $rpcRequest
+     * @param RpcRequestInterface $rpcRequest
      *
      * @return Request
      */
-    protected function convertRequest(RpcRequest $rpcRequest)
+    protected function convertRequest(RpcRequestInterface $rpcRequest)
     {
         $method = 'POST';
         $uri = $this->endpoint['base_uri'];
@@ -73,34 +67,32 @@ class HttpConnection extends AbstractConnection
 
     /**
      * @param Response $response
-     * @param string   $resultType
      *
-     * @return RpcResponse
+     * @return RpcResponseInterface
      */
-    protected function convertResponse(Response $response, $resultType)
+    protected function convertResponse(Response $response)
     {
-        $_type = $this->responseFactory->className($this->protocol);
+        $type = $this->responseFactory->className($this->protocol);
         $format = $this->protocol;
         $context = ['encoding' => $this->encoding];
         $body = $response->getBody();
 
-        /** @var RpcResponse $rpcResponse */
-        $rpcResponse = $this->serializer->deserialize($body, $_type, $format, $context);
+        /** @var RpcResponseInterface $rpcResponse */
+        $rpcResponse = $this->serializer->deserialize($body, $type, $format, $context);
 
         $rpcResult = $rpcResponse->getResult();
-        $rpcResult = $this->serializer->denormalize($rpcResult, $resultType, $format, $context);
+        $rpcResult = $this->serializer->denormalize($rpcResult, null, $format, $context);
         $rpcResponse->setResult($rpcResult);
 
         return $rpcResponse;
     }
 
     /**
-     * @param RpcRequest $rpcRequest
-     * @param string     $resultType
+     * @param RpcRequestInterface $rpcRequest
      *
-     * @return RpcResponse|null
+     * @return RpcResponseInterface|null
      */
-    protected function sendRequest(RpcRequest $rpcRequest, $resultType = null)
+    protected function sendRequest(RpcRequestInterface $rpcRequest)
     {
         try {
             $request = $this->convertRequest($rpcRequest);
@@ -118,7 +110,7 @@ class HttpConnection extends AbstractConnection
             $response = $ex->getResponse();
         }
 
-        $rpcResponse = $this->convertResponse($response, $resultType);
+        $rpcResponse = $this->convertResponse($response);
 
         return $rpcResponse;
     }

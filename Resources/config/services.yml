@@ -1,7 +1,7 @@
 services:
 
     #
-    # Event listeners
+    # Routing event listeners
     #
 
     ms.rpc.route_loader:
@@ -27,6 +27,9 @@ services:
     # Normalizers
     #
 
+    ms.rpc.serializer.name_converter.soap:
+        class: MS\RpcBundle\Serializer\NameConverter\SoapNameConverter
+
     ms.rpc.serializer.normalizer.date_time:
         class: MS\RpcBundle\Serializer\Normalizer\DateTimeNormalizer
         tags:
@@ -38,15 +41,33 @@ services:
         tags:
             - { name: serializer.normalizer }
 
+    ms.rpc.serializer.normalizer.jsend:
+        class: MS\RpcBundle\Serializer\Normalizer\JSendNormalizer
+        arguments: [ ~, ~, "@ms.property_info.extractor" ]
+        tags:
+            - { name: serializer.normalizer }
+
     ms.rpc.serializer.normalizer.json_rpc_xs:
         class: MS\RpcBundle\Serializer\Normalizer\JsonRpcXSNormalizer
         arguments: [ ~, ~, "@ms.property_info.extractor" ]
         tags:
             - { name: serializer.normalizer }
 
+    ms.rpc.serializer.normalizer.json_wsp:
+        class: MS\RpcBundle\Serializer\Normalizer\JsonWSPNormalizer
+        arguments: [ ~, ~, "@ms.property_info.extractor" ]
+        tags:
+            - { name: serializer.normalizer }
+
+    ms.rpc.serializer.normalizer.rest:
+        class: MS\RpcBundle\Serializer\Normalizer\RestNormalizer
+        arguments: [ ~, ~, "@ms.property_info.extractor" ]
+        tags:
+            - { name: serializer.normalizer }
+
     ms.rpc.serializer.normalizer.soap:
         class: MS\RpcBundle\Serializer\Normalizer\SoapNormalizer
-        arguments: [ ~, ~, "@ms.property_info.extractor" ]
+        arguments: [ ~, "@ms.rpc.serializer.name_converter.soap", "@ms.property_info.extractor" ]
         tags:
             - { name: serializer.normalizer }
 
@@ -76,7 +97,7 @@ services:
             - { name: serializer.encoder }
 
     #
-    # Factory
+    # Factories
     #
 
     ms.rpc.request_factory:
@@ -86,3 +107,11 @@ services:
     ms.rpc.response_factory:
         class: MS\RpcBundle\Factory\ResponseFactory
         arguments: [ "@serializer" ]
+
+    #
+    # REST Service
+    #
+
+    ms.rpc.rest:
+        class: MS\RpcBundle\Service\RestService
+        arguments: [ "@doctrine.orm.entity_manager_default" ]

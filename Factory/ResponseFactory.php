@@ -17,7 +17,7 @@ use MS\RpcBundle\RpcException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ResponseFactory extends AbstractFactory
+class ResponseFactory extends ModelFactory
 {
     /**
      * @param $protocol
@@ -26,7 +26,7 @@ class ResponseFactory extends AbstractFactory
      */
     public function className($protocol)
     {
-        return static::$protocols['response'][$protocol];
+        return $this->protocols['response'][$protocol];
     }
 
     /**
@@ -38,7 +38,7 @@ class ResponseFactory extends AbstractFactory
      */
     public function create($protocol)
     {
-        $class = static::$protocols['response'][$protocol];
+        $class = $this->protocols['response'][$protocol];
 
         return new $class();
     }

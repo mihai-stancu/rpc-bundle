@@ -23,5 +23,5 @@ interface Connection
      *
      * @return mixed
      */
-    public function send($service, $method, array $params = [], $resultType = null);
+    public function send($service, $method, array $params = []);
 }

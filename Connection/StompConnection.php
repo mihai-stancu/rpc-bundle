@@ -24,22 +24,13 @@ class StompConnection extends QueueConnection
     /** @var  string */
     protected $routingKey;
 
-    /** @var int  */
-    protected $flags = AMQP_NOPARAM;
-
     /**
-     * @param string $protocol
-     * @param string $encoding
-     * @param bool   $synchronous
-     * @param array  $endpoint
+     * @param array $context
+     * @param array $endpoint
      */
-    public function __construct(
-        $protocol,
-        $encoding,
-        array $endpoint = [],
-        $synchronous = false
-    ) {
-        parent::__construct($protocol, $encoding, $synchronous, $endpoint);
+    public function __construct(array $context = [], array $endpoint = [])
+    {
+        parent::__construct($context, $endpoint);
 
         list($broker, $username, $password, $headers, $destination) = array_values($this->endpoint);
 
@@ -90,6 +81,9 @@ class StompConnection extends QueueConnection
      */
     protected function sendRequest(RpcRequest $rpcRequest)
     {
+        $contentType = sprintf('application/%s+%s', $this->protocol, $this->encoding);
+        $headers = ['content-type' => $contentType];
+
         $destination = $this->destination;
 
         $message = $this->serializer->serialize(
@@ -97,11 +91,6 @@ class StompConnection extends QueueConnection
             $this->protocol,
             ['encoding' => $this->encoding]
         );
-
-        $headers = [
-            'content_type' => 'application/'.$this->encoding,
-            'rpc_type' => $this->protocol,
-        ];
 
         $this->client->send($destination, $message, $headers);
 

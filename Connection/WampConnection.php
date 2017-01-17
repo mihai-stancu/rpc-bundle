@@ -9,17 +9,12 @@
 
 namespace MS\RpcBundle\Connection;
 
-use MS\RpcBundle\Model\Rpc\Request;
-use MS\RpcBundle\Model\Rpc\Response;
-use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Ratchet\Wamp\WampConnection as RatchetWampConnection;
 
-class ZmqConnection extends QueueConnection
+class WampConnection extends AbstractConnection
 {
     /** @var \ZMQSocket */
     protected $socket;
-
-    /** @var \ZMQContext */
-    protected $context;
 
     /** @var int  */
     protected $mode = \ZMQ::MODE_DONTWAIT;
@@ -34,7 +29,7 @@ class ZmqConnection extends QueueConnection
 
         list($type, $dsn, $force, $mode) = array_values($this->endpoint);
 
-        $this->context = new \ZMQContext();
+        $this->context = new RatchetWampConnection();
         $this->socket = new \ZMQSocket($this->context, $type);
         $this->socket->bind($dsn, $force);
 

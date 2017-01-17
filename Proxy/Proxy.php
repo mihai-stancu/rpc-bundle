@@ -7,7 +7,7 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Service;
+namespace MS\RpcBundle\Proxy;
 
 use MS\RpcBundle\Connection\Connection;
 use MS\RpcBundle\RpcException;

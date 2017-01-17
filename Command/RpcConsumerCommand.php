@@ -7,14 +7,42 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Controller;
+namespace MS\RpcBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class RpcConsumerCommand extends ContainerAwareCommand
+class RpcConsumerCommand extends Command implements ContainerAwareInterface
 {
+    /** @var  ContainerInterface */
+    protected $container;
+
+    /**
+     * @param ContainerInterface|null $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
     public function configure()
     {
-        $this->setName('ms:rpc:consumer');
+        $this
+            ->setName('ms:rpc:consumer')
+            ->addOption('connection', 'c', InputOption::VALUE_REQUIRED, 'Name of connection service to be used.');
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     */
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        $connection = $input->getOption('connection');
+        var_dump($this->container->get($connection));
     }
 }

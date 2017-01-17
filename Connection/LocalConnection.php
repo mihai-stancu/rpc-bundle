@@ -9,32 +9,8 @@
 
 namespace MS\RpcBundle\Connection;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-
 class LocalConnection extends AbstractConnection
 {
-    /** @var  ContainerInterface */
-    protected $container;
-
-    /**
-     * @param ContainerInterface $container
-     * @param string             $protocol
-     * @param string             $encoding
-     * @param bool               $synchronous
-     * @param array              $endpoint
-     */
-    public function __construct(
-        ContainerInterface $container,
-        $protocol,
-        $encoding,
-        $synchronous = true,
-        array $endpoint = []
-    ) {
-        parent::__construct($protocol, $encoding, $synchronous, $endpoint);
-
-        $this->container = $container;
-    }
-
     /**
      * @param string $service
      * @param string $method

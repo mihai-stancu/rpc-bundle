@@ -15,11 +15,23 @@ use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
 use MS\RpcBundle\Model\Rpc\Response as RpcResponse;
 use MS\RpcBundle\Model\Rpc\Response as RpcXResponse;
 use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-class RpcController extends Controller
+class RpcController implements ContainerAwareInterface
 {
+    /** @var  ContainerInterface */
+    protected $container;
+
+    /**
+     * @param ContainerInterface|null $container
+     */
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @param Request    $request
      * @param RpcRequest $rpcRequest
@@ -29,10 +41,10 @@ class RpcController extends Controller
     public function dispatchAction(Request $request, RpcRequest $rpcRequest)
     {
         /** @var RequestFactory $requestFactory */
-        $requestFactory = $this->get('ms.rpc.request_factory');
+        $requestFactory = $this->container->get('ms.rpc.request_factory');
 
         /** @var ResponseFactory $responseFactory */
-        $responseFactory = $this->get('ms.rpc.response_factory');
+        $responseFactory = $this->container->get('ms.rpc.response_factory');
 
         if ($rpcRequest instanceof RpcXRequest) {
             $service = $rpcRequest->getService();
@@ -50,10 +62,6 @@ class RpcController extends Controller
 
         try {
             $result = $method->invokeArgs($service, $params);
-
-            /* @TODO: remove json_encode/json_decode circular reference hack */
-            $result = json_encode($result);
-            $result = json_decode($result, true);
         } catch (\Exception $result) {
         }
 

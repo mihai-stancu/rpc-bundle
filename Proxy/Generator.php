@@ -7,14 +7,14 @@
  * code in the LICENSE.md file.
  */
 
-namespace MS\RpcBundle\Service;
+namespace MS\RpcBundle\Proxy;
 
 /**
  * The ProxyGenerator takes an interface or a class as an input and generates a
  * Proxy class which implements all of the public abstract methods from the
  * supplied interface or class.
  */
-class ProxyGenerator
+class Generator
 {
     /**
      * @var string

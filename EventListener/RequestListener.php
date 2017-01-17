@@ -13,7 +13,7 @@ use MS\RpcBundle\Factory\RequestFactory;
 use MS\RpcBundle\Model\Rpc\Request as RpcRequest;
 use MS\RpcBundle\Model\RpcX\Request as RpcXRequest;
 use MS\RpcBundle\RpcException;
-use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\Routing\Router;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 
 class RequestListener
@@ -61,7 +61,7 @@ class RequestListener
         $controller = $route->getDefault('_controller');
         $request->attributes->set('_controller', $controller);
         $request->attributes->set('_route', $rpcRoute);
-        $request->attributes->set('rpcRequest', $rpcRequest);
+        $request->attributes->set('_rpcRequest', $rpcRequest);
     }
 
     /**

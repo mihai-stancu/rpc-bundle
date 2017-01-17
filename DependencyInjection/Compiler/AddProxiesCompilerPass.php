@@ -9,8 +9,8 @@
 
 namespace MS\RpcBundle\DependencyInjection\Compiler;
 
-use MS\RpcBundle\Service\Proxy;
-use MS\RpcBundle\Service\ProxyGenerator;
+use MS\RpcBundle\Proxy\Generator;
+use MS\RpcBundle\Proxy\Proxy;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class AddProxiesCompilerPass implements CompilerPassInterface
 {
-    /** @var  ProxyGenerator */
+    /** @var  Generator */
     protected $proxyGenerator;
 
     /**
@@ -30,7 +30,7 @@ class AddProxiesCompilerPass implements CompilerPassInterface
         $directory = $container->getParameter('ms_rpc.proxy.directory');
         $namespace = $container->getParameter('ms_rpc.proxy.namespace');
         $baseTrait = $container->getParameter('ms_rpc.proxy.base_trait');
-        $this->proxyGenerator = new ProxyGenerator($directory, $namespace, $baseTrait);
+        $this->proxyGenerator = new Generator($directory, $namespace, $baseTrait);
 
         $services = $container->findTaggedServiceIds('ms.rpc.proxy');
         foreach ($services as $id => $tags) {

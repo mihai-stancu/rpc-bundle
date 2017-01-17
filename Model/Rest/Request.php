@@ -30,19 +30,34 @@ class Request implements RpcRequestInterface
      */
     public static function factory(HttpRequest $httpRequest, Serializer $serializer, array $context = [])
     {
-        $attributes = $httpRequest->attributes;
         $content = $httpRequest->getContent();
 
-        $action = $httpRequest->getMethod();
-        $resource = $attributes->get('resource');
-        $params = $serializer->deserialize($content, ParamsDenormalizer::TYPE, 'rest', $context);
-        $id = $attributes->get('id');
-
         $request = new static();
+        $action = $httpRequest->getMethod();
         $request->setAction($action);
-        $request->setResource($resource);
-        $request->setParams($params);
+        $id = $httpRequest->getSession()->getId();
         $request->setId($id);
+
+        $attributes = $httpRequest->attributes->all();
+        if (!empty($attributes['_resource'])) {
+            $params['resource'] = $attributes['_resource'];
+            unset($attributes['_resource']);
+        }
+        foreach ($attributes as $key => $value) {
+            if (isset($key[0]) and $key[0] === '_') {
+                unset($attributes[$key]);
+            }
+        }
+
+        /** @var array $params */
+        $params = $serializer->deserialize($content, ParamsDenormalizer::TYPE, 'rest', $context);
+
+        $query = $httpRequest->query->all();
+        if (!empty($query)) {
+            $params['query'] = array_merge($params['query'], $query);
+        }
+
+        $request->setParams($params);
     }
 
     /**
@@ -59,28 +74,5 @@ class Request implements RpcRequestInterface
     public function setAction($action)
     {
         $this->setMethod($action);
-    }
-
-    /**
-     * @return int|string
-     */
-    public function getResource()
-    {
-        $params = $this->getParams();
-
-        if (isset($params['resource'])) {
-            return $params['resource'];
-        }
-    }
-
-    /**
-     * @param int|string $resource
-     */
-    public function setResource($resource)
-    {
-        $params = (array) $this->getParams();
-        $params['resource'] = $resource;
-
-        $this->setParams($params);
     }
 }

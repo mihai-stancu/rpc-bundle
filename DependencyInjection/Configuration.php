@@ -9,7 +9,7 @@
 
 namespace MS\RpcBundle\DependencyInjection;
 
-use MS\RpcBundle\Service\Proxy;
+use MS\RpcBundle\Proxy\Proxy;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
